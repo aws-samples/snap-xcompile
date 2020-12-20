@@ -20,7 +20,8 @@ aws s3 cp snap/ s3://$bucket/snap --recursive
 aws cloudformation create-stack \
 	--stack-name myteststack \
 	--template-body file://arm64_cfn.yaml \
-	--parameters ParameterKey=S3BucketName,ParameterValue=$bucket
+	--parameters ParameterKey=S3BucketName,ParameterValue=$bucket \
+	--capabilities CAPABILITY_IAM
 
 # delete cfn tmp file
 
