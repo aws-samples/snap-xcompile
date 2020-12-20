@@ -48,12 +48,12 @@ while [ -z $status ]; do
 	sleep 1
 
 	status=$(aws ec2 describe-tags \
-		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Name \
+		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 		--query "Tags[0].Value" --output text)
 done
 
 status=$(aws ec2 describe-tags \
-		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Name \
+		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 		--query "Tags[0].Value" --output text)
 
 echo "Configuring machine"
@@ -62,7 +62,7 @@ while [ $status == "CONFIGURING" ]; do
 	sleep 1
 
 	status=$(aws ec2 describe-tags \
-		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Name \
+		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 		--query "Tags[0].Value" --output text)
 done
 
@@ -72,7 +72,7 @@ while [ $status == "SNAPPING" ]; do
 	sleep 1
 
 	status=$(aws ec2 describe-tags \
-		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Name \
+		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 		--query "Tags[0].Value" --output text)
 done
 
