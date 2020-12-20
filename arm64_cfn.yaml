@@ -64,6 +64,10 @@ Resources:
           exec > >(tee /var/log/cloud-init-output.log|logger -t USER-DATA -s 2>/dev/console) 2>&1
           apt update
           apt install -y awscli
+          apt remove lxd-client -y
+          snap install lxd
+          lxd init --auto
+          snap install snapcraft --classic
           #aws s3 cp s3://${S3BucketName}/src src/ --recursive
           echo 'SNAPPING_COMPLETE'
 
