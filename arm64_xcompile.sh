@@ -24,15 +24,20 @@ echo $stack_arn
 # while loop checking for stack outputs -> ec2 ID
 ec2_id=''
 
-while [ -z $ec2_id ]; do
-	echo "hii"
-	sleep 1
-	ec2_id=$(aws cloudformation describe-stacks \
+aws cloudformation describe-stacks \
 		--stack-name $stack_arn \
 		--query "Stacks[0].Outputs[?OutputKey=='InstanceId'].OutputValue" \
-		--output text)
-	echo $ec2_id
-done
+		--output text
+
+# #while [ -z $ec2_id ]; do
+# 	echo "hii"
+# 	sleep 1
+# 	ec2_id=$(aws cloudformation describe-stacks \
+# 		--stack-name $stack_arn \
+# 		--query "Stacks[0].Outputs[?OutputKey=='InstanceId'].OutputValue" \
+# 		--output text)
+# 	echo $ec2_id
+# done
 
 echo "fuck"
 
