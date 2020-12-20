@@ -58,8 +58,6 @@ while [ $(get_status $ec2_id) == 'None' ]; do
 #	status=$(aws ec2 describe-tags \
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
-
-#	echo "A-"$status
 done
 
 # Install snap tools on ec2
@@ -72,8 +70,6 @@ while [ $(get_status $ec2_id) == "CONFIGURING" ]; do
 #	status=$(aws ec2 describe-tags \
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
-
-#	echo "B-"$status
 done
 
 echo -e "\nThe next step will take several minutes to complete. \c"
@@ -81,7 +77,7 @@ echo -e "Perfect opportunity for a stretch break!"
 
 # Snap source code
 echo -e "- Building snap\c"
-while [ status=$(get_status $ec2_id) == "SNAPPING" ]; do
+while [ $(get_status $ec2_id) == "SNAPPING" ]; do
 	echo -e '.\c'
 	sleep 1
 
@@ -89,20 +85,19 @@ while [ status=$(get_status $ec2_id) == "SNAPPING" ]; do
 #	status=$(aws ec2 describe-tags \
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
-
-#	echo "C-"$status
 done
 
-# ...check for complete tag...
-echo -e '\ncomplete!'
+# Download snap from bucket
+if [ $(get_status $ec2_id) == "COMPLETE" ]; then
+	echo -e "\n- Retrieving snap"
+	aws s3 cp s3://$name/*.snap .
+else
+	echo "[ERROR] Something went wrong!"
+	exit -1
+fi
 
-# download snap from s3
-aws s3 cp s3://$name/*.snap .
+echo "- Cleaning up resources"
+aws s3 rb s3://$name --force
+aws cloudformation delete-stack --stack-name $name
 
-# delete cfn stack
-# aws cloudformation delete-stack --stack-name myteststack
-
-# delete s3 bucket
-# aws s3 rb s3://$name --force
-
-#--query "Stacks[0].Outputs[?OutputKey=='DbUrl'].OutputValue" --output text
+echo 'Finished successfully'
