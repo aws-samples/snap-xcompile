@@ -23,19 +23,19 @@ stack_arn=$(aws cloudformation create-stack \
 echo $stack_arn
 
 # while loop checking for stack outputs -> ec2 ID
+echo "Spinning up EC2 instance"
 ec2_id='None'
 
 while [ $ec2_id == 'None' ]; do
-	echo "hii"
 	sleep 1
 	ec2_id=$(aws cloudformation describe-stacks \
 		--stack-name $stack_arn \
 		--query "Stacks[0].Outputs[?OutputKey=='InstanceId'].OutputValue" \
 		--output text)
-	echo $ec2_id
+	echo -e '.\c'
 done
 
-echo "fuck"
+echo $ec2_id
 
 # while loop fetching and printing user data output
 # complete when user data finished
