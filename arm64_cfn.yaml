@@ -64,7 +64,6 @@ Resources:
           #!/bin/bash -xe
           apt update
           apt install -y awscli
-          echo ${S3BucketName}
           aws s3 cp s3://${S3BucketName}/src src/ --recursive
           echo 'Done w user data!'
 
