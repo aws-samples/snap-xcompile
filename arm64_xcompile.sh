@@ -42,7 +42,7 @@ echo $ec2_id
 # complete when user data finished
 status=''
 
-while [ -z status ]; do
+while [ -z $status ]; do
 	aws ec2 get-console-output \
 		--instance-id $ec2_id \
 		--output text \
