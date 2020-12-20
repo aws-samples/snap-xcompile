@@ -45,6 +45,10 @@ status=''
 while [ -z $status ]; do
 	aws ec2 get-console-output \
 		--instance-id $ec2_id \
+		--output text
+		
+	aws ec2 get-console-output \
+		--instance-id $ec2_id \
 		--output text \
 		| tail -n 10 \
 		| grep -i USER-DATA
