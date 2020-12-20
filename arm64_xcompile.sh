@@ -49,11 +49,11 @@ echo -e "- Installing AWS tools\c"
 # Check ec2 status tag
 status=$(get_status $ec2_id)
 
-while [ $status == 'None' ]; do
+while [ $(get_status $ec2_id) == 'None' ]; do
 	sleep 1
 	echo -e '.\c'
 
-	status=$(get_status $ec2_id)
+#	status=$(get_status $ec2_id)
 #	status=$(aws ec2 describe-tags \
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
@@ -63,11 +63,11 @@ done
 
 # Install snap tools on ec2
 echo -e "\n- Configuring machine\c"
-while [ $status == "CONFIGURING" ]; do
+while [ $(get_status $ec2_id) == "CONFIGURING" ]; do
 	echo -e '.\c'
 	sleep 1
 
-	status=$(get_status $ec2_id)
+#	status=$(get_status $ec2_id)
 #	status=$(aws ec2 describe-tags \
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
@@ -75,8 +75,11 @@ while [ $status == "CONFIGURING" ]; do
 #	echo "B-"$status
 done
 
+echo "The next step will take several minutes to complete"
+echo "Perfect opportunity for a stretch break"
+
 # Snap source code
-echo -e "\n- Snapping\c"
+echo -e "\n- Building snap\c"
 while [ $status == "SNAPPING" ]; do
 	echo -e '.\c'
 	sleep 1
@@ -93,6 +96,7 @@ done
 echo -e '\ncomplete!'
 
 # download snap from s3
+aws s3 cp s3://*.snap .
 
 # delete cfn stack
 # aws cloudformation delete-stack --stack-name myteststack

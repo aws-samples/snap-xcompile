@@ -85,7 +85,7 @@ Resources:
           aws s3 cp *.snap s3://${S3BucketName}/
 
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=COMPLETE
-          echo 'SNAPPING_COMPLETE'
+          echo 'Exiting user data script'
 
 Outputs:
   InstanceId:
