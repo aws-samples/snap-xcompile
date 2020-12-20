@@ -40,12 +40,25 @@ echo $ec2_id
 
 # while loop fetching and printing user data output
 # complete when user data finished
-aws ec2 get-console-output --instance-id $ec2_id
-sleep 5
-aws ec2 get-console-output --instance-id $ec2_id
-sleep 5
-aws ec2 get-console-output --instance-id $ec2_id
+status=''
 
+while [ -z status ]; do
+	aws ec2 get-console-output \
+		--instance-id $ec2_id \
+		--output text \
+		| grep -i USER-DATA
+
+	sleep 1
+	status=$(aws ec2 get-console-output \
+		--instance-id $ec2_id \
+		--output text \
+		| grep -i SNAPPING_COMPLETE)
+
+	echo $status
+	echo 'trying again'
+done
+
+echo 'exiting'
 
 # download snap from s3
 
