@@ -83,7 +83,7 @@ fi
 
 # Delete s3 bucket and cfn stack
 echo "- Cleaning up resources"
-aws s3 rb s3://$name --force
+#aws s3 rb s3://$name --force
 aws cloudformation delete-stack --stack-name $name
 
 echo 'Finished successfully'
