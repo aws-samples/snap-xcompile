@@ -3,7 +3,7 @@
 # Create s3 bucket
 uuid=$(head -c 16 /proc/sys/kernel/random/uuid)
 #echo $uuid
-bucket=arm64-snap-$uuid
+name=arm64-snap-$uuid
 echo "Creating S3 bucket"
 #aws s3 mb s3://$bucket
 
@@ -14,9 +14,9 @@ echo "Creating S3 bucket"
 # initiate cfn stack
 echo "Setting up xcompile resources"
 stack_arn=$(aws cloudformation create-stack \
-	--stack-name myteststack \
+	--stack-name $name \
 	--template-body file://arm64_cfn.yaml \
-	--parameters ParameterKey=S3BucketName,ParameterValue=$bucket \
+	--parameters ParameterKey=S3BucketName,ParameterValue=$name \
 	--capabilities CAPABILITY_IAM \
 	--query "StackId" --output text)
 
@@ -46,7 +46,7 @@ while [ -z $status ]; do
 	aws ec2 get-console-output \
 		--instance-id $ec2_id \
 		--output text
-		
+
 	aws ec2 get-console-output \
 		--instance-id $ec2_id \
 		--output text \
