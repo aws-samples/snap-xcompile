@@ -65,7 +65,7 @@ Resources:
           apt update
           apt install -y awscli
           #aws s3 cp s3://${S3BucketName}/src src/ --recursive
-          echo 'Done w user data!'
+          echo 'SNAPPING_COMPLETE'
 
 Outputs:
   InstanceId:
