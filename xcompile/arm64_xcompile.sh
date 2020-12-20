@@ -1,6 +1,6 @@
 #!/bin/bash
 
-
+# Fetch status tag of an ec2 instance
 function get_status {
 	echo $(aws ec2 describe-tags \
 			--filters Name=resource-id,Values=$1 \
@@ -51,13 +51,8 @@ echo -e "- Installing AWS tools\c"
 #status=$(get_status $ec2_id)
 
 while [ $(get_status $ec2_id) == 'None' ]; do
-	sleep 1
 	echo -e '.\c'
-
-#	status=$(get_status $ec2_id)
-#	status=$(aws ec2 describe-tags \
-#		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
-#		--query "Tags[0].Value" --output text)
+	sleep 1
 done
 
 # Install snap tools on ec2
@@ -65,11 +60,6 @@ echo -e "\n- Configuring machine\c"
 while [ $(get_status $ec2_id) == "CONFIGURING" ]; do
 	echo -e '.\c'
 	sleep 1
-
-#	status=$(get_status $ec2_id)
-#	status=$(aws ec2 describe-tags \
-#		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
-#		--query "Tags[0].Value" --output text)
 done
 
 echo -e "\nThe next step will take several minutes to complete. \c"
@@ -80,11 +70,6 @@ echo -e "- Building snap\c"
 while [ $(get_status $ec2_id) == "SNAPPING" ]; do
 	echo -e '.\c'
 	sleep 1
-
-#	status=$(get_status $ec2_id)
-#	status=$(aws ec2 describe-tags \
-#		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
-#		--query "Tags[0].Value" --output text)
 done
 
 # Download snap from bucket
@@ -96,6 +81,7 @@ else
 	exit -1
 fi
 
+# Delete s3 bucket and cfn stack
 echo "- Cleaning up resources"
 aws s3 rb s3://$name --force
 aws cloudformation delete-stack --stack-name $name
