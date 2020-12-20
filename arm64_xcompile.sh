@@ -1,10 +1,10 @@
 #!/bin/bash
 
 function get_status {
-	echo aws ec2 describe-tags \
-		--filters Name=resource-id,Values=$1 \
-				  Name=key,Values=Status \
-		--query "Tags[0].Value" --output text
+	echo $(aws ec2 describe-tags \
+			--filters Name=resource-id,Values=$1 \
+				  	  Name=key,Values=Status \
+			--query "Tags[0].Value" --output text)
 }  
 
 # Create s3 bucket
@@ -31,7 +31,7 @@ stack_arn=$(aws cloudformation create-stack \
 echo -e "\t- Stack Name: $name"
 echo -e "\t- Stack ARN: $stack_arn"
 
-# while loop checking for stack outputs -> ec2 ID
+# wait for ec2 instance to launch
 echo -e "- Spinning up EC2 instance\c"
 ec2_id='None'
 
