@@ -49,9 +49,9 @@ echo -e "- Installing AWS tools\c"
 
 # while loop fetching and printing user data output
 # complete when user data finished
-status=''
+status=$(get_status $ec2_id)
 
-while [ -z $status ]; do
+while [ $status == 'None' ]; do
 	sleep 1
 	#echo -e '.\c'
 

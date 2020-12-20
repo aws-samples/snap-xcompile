@@ -70,15 +70,15 @@ Resources:
           apt update
           apt install -y awscli
 
-          STATUS=CONFIGURING
-          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=$STATUS
+          status=CONFIGURING
+          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=$status
           apt remove lxd-client -y
           snap install lxd
           lxd init --auto
           snap install snapcraft --classic
 
-          STATUS=SNAPPING
-          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=$STATUS
+          status=SNAPPING
+          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=$status
           mkdir -p /tmp/robomaker_snap
           cd tmp/robomaker_snap
           aws s3 cp s3://${S3BucketName}/src src/ --recursive
@@ -87,8 +87,8 @@ Resources:
           ls .
           #aws s3 cp *.snap s3://${S3BucketName}/
 
-          STATUS=COMPLETE
-          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=$STATUS
+          status=COMPLETE
+          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=$status
           
           echo 'SNAPPING_COMPLETE'
 
