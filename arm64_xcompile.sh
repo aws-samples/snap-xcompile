@@ -16,8 +16,8 @@ aws s3 mb s3://$name
 
 # Upload code files to bucket
 echo "- Uploading source code to bucket"
-aws s3 cp src/ s3://$bucket/src --recursive
-aws s3 cp snap/ s3://$bucket/snap --recursive
+aws s3 cp src/ s3://$name/src --recursive
+aws s3 cp snap/ s3://$name/snap --recursive
 
 # initiate cfn stack
 echo "- Setting up xcompile resources"
