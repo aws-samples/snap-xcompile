@@ -1,3 +1,7 @@
+Parameters:
+  S3BucketName:
+    Type: String
+
 Resources:
 
   EC2InstanceProfile:
@@ -60,6 +64,7 @@ Resources:
           #!/bin/bash -xe
           apt update
           apt install -y awscli
-          aws s3 cp s3://S3_BUCKET/src src/ --recursive
+          echo ${S3BucketName}
+          aws s3 cp s3://${S3BucketName}/src src/ --recursive
           echo 'Done w user data!'
 
