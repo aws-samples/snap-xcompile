@@ -1,11 +1,12 @@
 #!/bin/bash
 
+
 function get_status {
 	echo $(aws ec2 describe-tags \
 			--filters Name=resource-id,Values=$1 \
 				  	  Name=key,Values=Status \
 			--query "Tags[0].Value" --output text)
-}  
+}
 
 # Create s3 bucket
 uuid=$(head -c 16 /proc/sys/kernel/random/uuid)
@@ -47,7 +48,7 @@ echo -e "\n\t- Instance ID: $ec2_id"
 echo -e "- Installing AWS tools\c"
 
 # Check ec2 status tag
-status=$(get_status $ec2_id)
+#status=$(get_status $ec2_id)
 
 while [ $(get_status $ec2_id) == 'None' ]; do
 	sleep 1
@@ -75,16 +76,16 @@ while [ $(get_status $ec2_id) == "CONFIGURING" ]; do
 #	echo "B-"$status
 done
 
-echo "The next step will take several minutes to complete"
-echo "Perfect opportunity for a stretch break"
+echo -e "\nThe next step will take several minutes to complete. \c"
+echo -e "Perfect opportunity for a stretch break!"
 
 # Snap source code
-echo -e "\n- Building snap\c"
-while [ $status == "SNAPPING" ]; do
+echo -e "- Building snap\c"
+while [ status=$(get_status $ec2_id) == "SNAPPING" ]; do
 	echo -e '.\c'
 	sleep 1
 
-	status=$(get_status $ec2_id)
+#	status=$(get_status $ec2_id)
 #	status=$(aws ec2 describe-tags \
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
@@ -96,7 +97,7 @@ done
 echo -e '\ncomplete!'
 
 # download snap from s3
-aws s3 cp s3://*.snap .
+aws s3 cp s3://$name/*.snap .
 
 # delete cfn stack
 # aws cloudformation delete-stack --stack-name myteststack
