@@ -1,0 +1,65 @@
+Resources:
+
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref S3AccessRole
+
+  S3AccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+
+  RolePolicies:
+    Type: AWS::IAM::Policy
+    DependsOn:
+      - Arm64Instance
+    Properties:
+      PolicyName: S3FullAccessPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: 's3:*'
+            Resource: '*'
+      Roles:
+        - !Ref S3AccessRole
+
+
+  SSHSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        FromPort: 22
+        IpProtocol: tcp
+        ToPort: 22
+
+  Arm64Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: ec2-keypair
+      InstanceType: t4g.micro
+      ImageId: ami-087fa126bfdebc5c3  # Ubuntu18.04 Arm64
+      IamInstanceProfile: !Ref EC2InstanceProfile
+      SecurityGroups:
+        - !Ref SSHSecurityGroup
+      Tags:
+        - Key: Name
+          Value: arm64-ubuntu
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          apt update
+          apt install -y awscli
+          aws s3 cp s3://S3_BUCKET/src src/ --recursive
+          echo 'Done w user data!'
+
