@@ -37,35 +37,47 @@ while [ $ec2_id == 'None' ]; do
 done
 
 echo -e "\nInstance ID: $ec2_id"
-echo "Initiating build"
+#echo "Initiating config"
 
 # while loop fetching and printing user data output
 # complete when user data finished
 status=''
 
 while [ -z $status ]; do
-	aws ec2 get-console-output \
-		--instance-id $ec2_id \
-		--output text
-
-	aws ec2 get-console-output \
-		--instance-id $ec2_id \
-		--output text \
-		| tail -n 10 \
-		| grep -i USER-DATA
-
+	echo -e '.\c'
 	sleep 1
 
-	status=$(aws ec2 get-console-output \
-		--instance-id $ec2_id \
-		--output text \
-		| grep -i SNAPPING_COMPLETE)
-
-	echo $status
-	echo 'trying again'
+	status=$(aws ec2 describe-tags \
+		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Name \
+		--query "Tags[0].Value" --output text)
 done
 
-echo 'exiting'
+status=$(aws ec2 describe-tags \
+		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Name \
+		--query "Tags[0].Value" --output text)
+
+echo "Configuring machine"
+while [ $status == "CONFIGURING" ]; do
+	echo -e '.\c'
+	sleep 1
+
+	status=$(aws ec2 describe-tags \
+		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Name \
+		--query "Tags[0].Value" --output text)
+done
+
+echo "Snapping"
+while [ $status == "SNAPPING" ]; do
+	echo -e '.\c'
+	sleep 1
+
+	status=$(aws ec2 describe-tags \
+		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Name \
+		--query "Tags[0].Value" --output text)
+done
+
+
+echo 'complete!'
 
 # download snap from s3
 
