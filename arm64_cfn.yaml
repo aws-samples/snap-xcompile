@@ -62,9 +62,9 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
           # exec > >(tee /var/log/cloud-init-output.log|logger -t USER-DATA -s 2>/dev/console) 2>&1
-          apt update
-          apt install -y awscli
-          aws s3 cp s3://${S3BucketName}/src src/ --recursive
+          #apt update
+          #apt install -y awscli
+          #aws s3 cp s3://${S3BucketName}/src src/ --recursive
           echo 'Done w user data!'
 
 Outputs:
