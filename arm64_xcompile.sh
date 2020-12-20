@@ -9,7 +9,6 @@ function get_status {
 
 # Create s3 bucket
 uuid=$(head -c 16 /proc/sys/kernel/random/uuid)
-#echo $uuid
 name=arm64-snap-$uuid
 echo "- Creating S3 bucket"
 aws s3 mb s3://$name
@@ -19,7 +18,7 @@ echo "- Uploading source code to bucket"
 aws s3 cp src/ s3://$name/src --recursive
 aws s3 cp snap/ s3://$name/snap --recursive
 
-# initiate cfn stack
+# Initiate cfn stack
 echo "- Setting up xcompile resources"
 stack_arn=$(aws cloudformation create-stack \
 	--stack-name $name \
@@ -31,7 +30,7 @@ stack_arn=$(aws cloudformation create-stack \
 echo -e "\t- Stack Name: $name"
 echo -e "\t- Stack ARN: $stack_arn"
 
-# wait for ec2 instance to launch
+# Wait for ec2 instance to launch
 echo -e "- Spinning up EC2 instance\c"
 ec2_id='None'
 
@@ -47,25 +46,25 @@ done
 echo -e "\n\t- Instance ID: $ec2_id"
 echo -e "- Installing AWS tools\c"
 
-# check ec2 status tag
+# Check ec2 status tag
 status=$(get_status $ec2_id)
 
 while [ $status == 'None' ]; do
 	sleep 1
-	#echo -e '.\c'
+	echo -e '.\c'
 
 	status=$(get_status $ec2_id)
 #	status=$(aws ec2 describe-tags \
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
 
-	echo "A-"$status
+#	echo "A-"$status
 done
 
-# installing snap tools on ec2
+# Install snap tools on ec2
 echo -e "\n- Configuring machine\c"
 while [ $status == "CONFIGURING" ]; do
-	#echo -e '.\c'
+	echo -e '.\c'
 	sleep 1
 
 	status=$(get_status $ec2_id)
@@ -73,13 +72,13 @@ while [ $status == "CONFIGURING" ]; do
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
 
-	echo "B-"$status
+#	echo "B-"$status
 done
 
-# snapping source code
+# Snap source code
 echo -e "\n- Snapping\c"
 while [ $status == "SNAPPING" ]; do
-	#echo -e '.\c'
+	echo -e '.\c'
 	sleep 1
 
 	status=$(get_status $ec2_id)
@@ -87,7 +86,7 @@ while [ $status == "SNAPPING" ]; do
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
 
-	echo "C-"$status
+#	echo "C-"$status
 done
 
 # ...check for complete tag...
@@ -99,5 +98,6 @@ echo -e '\ncomplete!'
 # aws cloudformation delete-stack --stack-name myteststack
 
 # delete s3 bucket
+# aws s3 rb s3://$name --force
 
 #--query "Stacks[0].Outputs[?OutputKey=='DbUrl'].OutputValue" --output text

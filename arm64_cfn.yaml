@@ -80,7 +80,7 @@ Resources:
           mkdir -p /tmp/robomaker_snap
           cd tmp/robomaker_snap
           aws s3 cp s3://${S3BucketName}/src src/ --recursive
-          aws s3 cp s3://${S3BucketName}/tsnap snap/ --recursive
+          aws s3 cp s3://${S3BucketName}/snap snap/ --recursive
           snapcraft --use-lxd
           aws s3 cp *.snap s3://${S3BucketName}/
 
