@@ -64,19 +64,32 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
-          exec > >(tee /var/log/cloud-init-output.log|logger -t USER-DATA -s 2>/dev/console) 2>&1
+          az=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+          region=${!az%%?}
+          instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+
+          STATUS=CONFIGURING
+          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=$STATUS
           apt update
           apt install -y awscli
           #apt remove lxd-client -y
           #snap install lxd
           #lxd init --auto
           #snap install snapcraft --classic
-          #aws s3 cp s3://${S3BucketName}/src src/ --recursive
-          az=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
-          echo $az
-          region=${!az%%?}
-          instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Name,Value=myname
+
+          STATUS=SNAPPING
+          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=$STATUS
+          mkdir -p /tmp/robomaker_snap
+          cd tmp/robomaker_snap
+          #aws s3 cp s3://S3_BUCKET/src src/ --recursive
+          #aws s3 cp s3://S3_BUCKET/snap snap/ --recursive
+          #snapcraft --use-lxd
+          #ls .
+          #aws s3 cp *.snap s3://S3_BUCKET/
+
+          STATUS=COMPLETE
+          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=$STATUS
+          
           echo 'SNAPPING_COMPLETE'
 
 Outputs:
