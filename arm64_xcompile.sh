@@ -20,7 +20,8 @@ stack_arn=$(aws cloudformation create-stack \
 	--capabilities CAPABILITY_IAM \
 	--query "StackId" --output text)
 
-#echo $stack_arn
+echo "Stack Name: $name"
+echo "Stack ARN: $stack_arn"
 
 # while loop checking for stack outputs -> ec2 ID
 echo "Spinning up EC2 instance"
@@ -35,8 +36,8 @@ while [ $ec2_id == 'None' ]; do
 	echo -e '.\c'
 done
 
-echo -e "\nInitiating build"
-echo $ec2_id
+echo -e "\nInstance ID: $ec2_id"
+echo "Initiating build"
 
 # while loop fetching and printing user data output
 # complete when user data finished

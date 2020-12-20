@@ -69,6 +69,11 @@ Resources:
           lxd init --auto
           snap install snapcraft --classic
           #aws s3 cp s3://${S3BucketName}/src src/ --recursive
+          az=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+          region=${az%%?}
+          instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+
+          aws ec2 create-tags --resources $instance_id --region $region --tags Key=foo,Value=bar Key=Name,Value=myname
           echo 'SNAPPING_COMPLETE'
 
 Outputs:
