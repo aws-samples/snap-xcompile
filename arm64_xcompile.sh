@@ -37,7 +37,7 @@ while [ $ec2_id == 'None' ]; do
 done
 
 echo -e "\nInstance ID: $ec2_id"
-#echo "Initiating config"
+echo "Installing AWS tools"
 
 # while loop fetching and printing user data output
 # complete when user data finished

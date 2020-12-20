@@ -67,24 +67,24 @@ Resources:
           az=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
           region=${!az%%?}
           instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+          apt update
+          apt install -y awscli
 
           STATUS=CONFIGURING
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=$STATUS
-          apt update
-          apt install -y awscli
-          #apt remove lxd-client -y
-          #snap install lxd
-          #lxd init --auto
-          #snap install snapcraft --classic
+          apt remove lxd-client -y
+          snap install lxd
+          lxd init --auto
+          snap install snapcraft --classic
 
           STATUS=SNAPPING
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=$STATUS
           mkdir -p /tmp/robomaker_snap
           cd tmp/robomaker_snap
-          #aws s3 cp s3://S3_BUCKET/src src/ --recursive
-          #aws s3 cp s3://S3_BUCKET/snap snap/ --recursive
+          aws s3 cp s3://S3_BUCKET/src src/ --recursive
+          aws s3 cp s3://S3_BUCKET/snap snap/ --recursive
           #snapcraft --use-lxd
-          #ls .
+          ls .
           #aws s3 cp *.snap s3://S3_BUCKET/
 
           STATUS=COMPLETE
