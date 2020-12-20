@@ -4,7 +4,7 @@
 uuid=$(head -c 16 /proc/sys/kernel/random/uuid)
 #echo $uuid
 bucket=arm64-snap-$uuid
-echo "Creating S3 bucket..."
+echo "Creating S3 bucket"
 #aws s3 mb s3://$bucket
 
 # Upload code files to bucket
@@ -12,7 +12,7 @@ echo "Creating S3 bucket..."
 #aws s3 cp snap/ s3://$bucket/snap --recursive
 
 # initiate cfn stack
-echo "Setting up xcompile resources..."
+echo "Setting up xcompile resources"
 stack_arn=$(aws cloudformation create-stack \
 	--stack-name myteststack \
 	--template-body file://arm64_cfn.yaml \
@@ -20,10 +20,10 @@ stack_arn=$(aws cloudformation create-stack \
 	--capabilities CAPABILITY_IAM \
 	--query "StackId" --output text)
 
-echo $stack_arn
+#echo $stack_arn
 
 # while loop checking for stack outputs -> ec2 ID
-echo "Spinning up EC2 instance"
+echo -e "Spinning up EC2 instance\c"
 ec2_id='None'
 
 while [ $ec2_id == 'None' ]; do
@@ -35,6 +35,7 @@ while [ $ec2_id == 'None' ]; do
 	echo -e '.\c'
 done
 
+echo -e "\nInitiating build"
 echo $ec2_id
 
 # while loop fetching and printing user data output
