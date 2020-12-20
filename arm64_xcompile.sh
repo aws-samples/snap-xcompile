@@ -19,10 +19,13 @@ stack_arn=$(aws cloudformation create-stack \
 	--capabilities CAPABILITY_IAM \
 	--query "StackId" --output text)
 
+echo $stack_arn
+
 # while loop checking for stack outputs -> ec2 ID
 ec2_id=''
 
 while [ -z $ec2_id ]; do
+	echo "hii"
 	sleep 1
 	ec2_id=$(aws cloudformation describe-stacks \
 		--stack-name $stack_arn \
@@ -30,6 +33,8 @@ while [ -z $ec2_id ]; do
 		--output text)
 	echo $ec2_id
 done
+
+echo "fuck"
 
 # while loop fetching and printing user data output
 # complete when user data finished
