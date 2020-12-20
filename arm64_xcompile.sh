@@ -25,7 +25,7 @@ echo $stack_arn
 # while loop checking for stack outputs -> ec2 ID
 ec2_id='None'
 
-while [ $ec2_id == 'None']; do
+while [ $ec2_id == 'None' ]; do
 	echo "hii"
 	sleep 1
 	ec2_id=$(aws cloudformation describe-stacks \
