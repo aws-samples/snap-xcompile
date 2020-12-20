@@ -47,8 +47,7 @@ done
 echo -e "\n\t- Instance ID: $ec2_id"
 echo -e "- Installing AWS tools\c"
 
-# while loop fetching and printing user data output
-# complete when user data finished
+# check ec2 status tag
 status=$(get_status $ec2_id)
 
 while [ $status == 'None' ]; do
@@ -63,6 +62,7 @@ while [ $status == 'None' ]; do
 	echo "A-"$status
 done
 
+# installing snap tools on ec2
 echo -e "\n- Configuring machine\c"
 while [ $status == "CONFIGURING" ]; do
 	#echo -e '.\c'
@@ -76,6 +76,7 @@ while [ $status == "CONFIGURING" ]; do
 	echo "B-"$status
 done
 
+# snapping source code
 echo -e "\n- Snapping\c"
 while [ $status == "SNAPPING" ]; do
 	#echo -e '.\c'
@@ -89,7 +90,7 @@ while [ $status == "SNAPPING" ]; do
 	echo "C-"$status
 done
 
-
+# ...check for complete tag...
 echo -e '\ncomplete!'
 
 # download snap from s3
