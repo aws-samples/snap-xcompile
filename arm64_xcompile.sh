@@ -53,33 +53,40 @@ status=''
 
 while [ -z $status ]; do
 	sleep 1
-	echo -e '.\c'
+	#echo -e '.\c'
+
 	status=$(get_status $ec2_id)
 #	status=$(aws ec2 describe-tags \
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
+
+	echo "A-"$status
 done
 
 echo -e "\n- Configuring machine\c"
 while [ $status == "CONFIGURING" ]; do
-	echo -e '.\c'
+	#echo -e '.\c'
 	sleep 1
 
 	status=$(get_status $ec2_id)
 #	status=$(aws ec2 describe-tags \
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
+
+	echo "B-"$status
 done
 
 echo -e "\n- Snapping\c"
 while [ $status == "SNAPPING" ]; do
-	echo -e '.\c'
+	#echo -e '.\c'
 	sleep 1
 
 	status=$(get_status $ec2_id)
 #	status=$(aws ec2 describe-tags \
 #		--filters Name=resource-id,Values=$ec2_id Name=key,Values=Status \
 #		--query "Tags[0].Value" --output text)
+
+	echo "C-"$status
 done
 
 
