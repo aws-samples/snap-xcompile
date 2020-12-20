@@ -12,7 +12,7 @@ uuid=$(head -c 16 /proc/sys/kernel/random/uuid)
 #echo $uuid
 name=arm64-snap-$uuid
 echo "- Creating S3 bucket"
-aws s3 mb s3://$bucket
+aws s3 mb s3://$name
 
 # Upload code files to bucket
 echo "- Uploading source code to bucket"
