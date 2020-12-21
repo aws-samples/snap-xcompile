@@ -17,4 +17,7 @@ replace content of snap/ and src/ folders with your own snapcraft and source cod
 
 ...prepared snap will be present in ~/catkin_ws once script finishes..
 
-..if script fails to execute sucessfully, check userdata logs the ec2 instance created by the cfn stack under /var/log/cloud-init-output.log
+## Notes
+* Some steps in the script take several minutes to finish; patience you must have
+* Check status of the CloudFormation stack created by the script to track progress
+* Access EC2 instance log under _/var/log/cloud-init-output.log_ for further execution details
