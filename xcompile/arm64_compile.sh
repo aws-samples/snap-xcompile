@@ -8,6 +8,17 @@ function get_status {
 			--query "Tags[0].Value" --output text)
 }
 
+# Delete s3 bucket and cfn stack
+function exit_script {
+	echo "- Cleaning up resources"
+	aws s3 rb s3://$name --force
+	aws cloudformation delete-stack --stack-name $name
+    trap - SIGINT SIGTERM # clear the trap
+    kill -- -$$ # Sends SIGTERM to child/sub processes
+}
+
+trap cleanup SIGINT SIGTERM
+
 # Check for snapcraft file
 if [[ ! -f $(pwd)/snap/snapcraft.yaml ]]; then
     echo "[ERROR] Snapcraft config file not found!"
@@ -86,9 +97,6 @@ else
 	exit -2
 fi
 
-# Delete s3 bucket and cfn stack
-echo "- Cleaning up resources"
-aws s3 rb s3://$name --force
-aws cloudformation delete-stack --stack-name $name
+cleanup
 
 echo 'Finished successfully'
