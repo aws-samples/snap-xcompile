@@ -7,7 +7,7 @@ Roboticists often develop software on one platform (say, a laptop) and run their
 
 Snap xCompile takes the idea of remote builds and uses a variety of AWS services to build snaps without exposing your source code. The tools spins up an EC2 instance with the the target architecture, uploads your code to a (private and ephemeral) S3 bucket, builds the snap and fetches it to your host workstation. The result is a seamless one-command process to build snaps when host and target architectures differ.
 
-Currently, Snap xCompile supports snapping for aarch64/arm64 target architecture.
+Currently, Snap xCompile supports snapping for *arm64* targets.
 
 ## Notes
 * You should have AWS CLI tools [installed](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) on your workstation
@@ -36,7 +36,7 @@ Currently, Snap xCompile supports snapping for aarch64/arm64 target architecture
   ./xcompile/arm64_compile.sh
   ```
 
-The finished snap will be downloaded to your workspace by the script.
+The finished snap will be downloaded to your workspace by the script
 
 4. Transfer snap to your target system
 
