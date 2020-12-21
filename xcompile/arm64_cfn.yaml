@@ -79,6 +79,8 @@ Resources:
           lxd init --auto
           snap install snapcraft --classic
 
+          echo ${AWS::Region}
+
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=SNAPPING
           mkdir -p /tmp/robomaker_snap
           cd tmp/robomaker_snap
@@ -89,8 +91,6 @@ Resources:
 
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=COMPLETE
           echo 'Exiting user data script'
-
-          echo ${AWS::Region}
 
 Outputs:
   InstanceId:
