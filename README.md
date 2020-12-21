@@ -1,7 +1,7 @@
 # Snap xCompile
 Tool to cross-compile ROS snaps for arm64 machines using AWS
 
-Roboticists often develop software on one platform (say, a laptop) and run their apps on another (say, a robot SBC). A lot of times, these platforms have different chip architectures, making cross-compiling of apps necessary.
+Roboticists often develop software on one platform (say, a laptop) and run their apps on another (say, a robot SBC). A lot of times, these platforms have different chip architectures, making cross-compiling a necessity.
 
 [Snapcraft](https://snapcraft.io/), although a nifty and simple tool for building snaps, does not currently support cross-compiling. Running it on docker images of the target architecture fails because snapcraft depends on _systemd_, which is usually disabled in docker containers to enhance security and isolation. Although it is possible to configure a docker container to run systemd, I found that snap tools stopped working when the host and container architectures were different. Snapcraft does offer the capability to do [remote builds](https://snapcraft.io/docs/remote-build) for different architectures, but this uploads your code to [Launchpad](https://launchpad.net/) and makes it publicly available. Pretty much a deal breaker if you want to keep your code private.
 
