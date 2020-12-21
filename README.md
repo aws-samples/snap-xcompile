@@ -11,3 +11,5 @@ Scripts to cross-compile snaps for arm64 machines.
 - ./xcompile/arm64_compile.sh
 
 ...prepared snap will be present in ~/catkin_ws once script finishes..
+
+..if script fails to execute sucessfully, check userdata logs the ec2 instance created by the cfn stack under /var/log/cloud-init-output.log
