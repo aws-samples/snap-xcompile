@@ -12,7 +12,7 @@ Currently, Snap xCompile supports snapping for **arm64** targets.
 ## Notes
 * You should have AWS CLI tools [installed](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) on your workstation
 * This repository uses a [ROS Hello World](https://github.com/adi3/rospy_hello_world) project as an example
-* When snapping your own software, the _snap/_ and _src/_ directories should contain the code you want snapped
+* When snapping your own software, the _src/_ directory will contain the code you want snapped
 * Some steps in the script take several minutes to finish; patience you must have
 * Check status of the CloudFormation stack created by the script to track progress
 * Access EC2 instance log under _/var/log/cloud-init-output.log_ for further execution details
