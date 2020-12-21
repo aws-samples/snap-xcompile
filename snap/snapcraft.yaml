@@ -17,3 +17,4 @@ parts:
 apps:
   launch:
     command: rosrun hello_world talker.py
+    plugs: [network, network-bind]

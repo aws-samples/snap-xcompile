@@ -22,8 +22,8 @@ aws s3 mb s3://$name
 
 # Upload code files to bucket
 echo "- Uploading source code to bucket"
-aws s3 cp src/ s3://$name/src --recursive
-aws s3 cp snap/ s3://$name/snap --recursive
+aws s3 cp $(pwd)/src/ s3://$name/src --recursive
+aws s3 cp $(pwd)/snap/ s3://$name/snap --recursive
 
 # Initiate cfn stack
 echo "- Setting up xcompile resources"
@@ -45,7 +45,7 @@ while [ $ec2_id == 'None' ]; do
 	sleep 1
 	echo -e '.\c'
 	ec2_id=$(aws cloudformation describe-stacks \
-		--stack-name $stack_arn \
+		--stack-name $name \
 		--query "Stacks[0].Outputs[?OutputKey=='InstanceId'].OutputValue" \
 		--output text)
 done
@@ -53,9 +53,8 @@ done
 echo -e "\n\t- Instance ID: $ec2_id"
 echo -e "- Installing AWS tools\c"
 
-# Check ec2 status tag
-#status=$(get_status $ec2_id)
 
+# Wait for ec2 status tag to be created
 while [ $(get_status $ec2_id) == 'None' ]; do
 	echo -e '.\c'
 	sleep 1
@@ -89,7 +88,7 @@ fi
 
 # Delete s3 bucket and cfn stack
 echo "- Cleaning up resources"
-#aws s3 rb s3://$name --force
+aws s3 rb s3://$name --force
 aws cloudformation delete-stack --stack-name $name
 
 echo 'Finished successfully'
