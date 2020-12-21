@@ -3,13 +3,13 @@ Parameters:
     Type: String
 
 Resources:
-  EC2InstanceProfile:
+  Arm64InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
-        - !Ref S3AccessRole
+        - !Ref Arm64AccessRole
 
-  S3AccessRole:
+  Arm64AccessRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -25,18 +25,18 @@ Resources:
     DependsOn:
       - Arm64Instance
     Properties:
-      PolicyName: S3FullAccessPolicy
+      PolicyName: Arm64AccessPolicy
       PolicyDocument:
         Version: 2012-10-17
         Statement:
           - Effect: Allow
             Action: 's3:*'
-            Resource: '*'
+            Resource: !Sub 'arn:aws:s3:::${UniqueName}'
           - Effect: Allow
             Action: 'ec2:CreateTags'
             Resource: '*'
       Roles:
-        - !Ref S3AccessRole
+        - !Ref Arm64AccessRole
 
 
   SSHSecurityGroup:
@@ -55,7 +55,7 @@ Resources:
       KeyName: ec2-keypair
       InstanceType: t4g.micro
       ImageId: ami-087fa126bfdebc5c3  # Ubuntu18.04 Arm64
-      IamInstanceProfile: !Ref EC2InstanceProfile
+      IamInstanceProfile: !Ref Arm64InstanceProfile
       SecurityGroups:
         - !Ref SSHSecurityGroup
       Tags:
@@ -86,6 +86,8 @@ Resources:
 
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=COMPLETE
           echo 'Exiting user data script'
+
+          echo ${!AWS::Region}
 
 Outputs:
   InstanceId:
