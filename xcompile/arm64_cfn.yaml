@@ -85,8 +85,8 @@ Resources:
           cd tmp/robomaker_snap
           aws s3 cp s3://${UniqueName}/src src/ --recursive
           aws s3 cp s3://${UniqueName}/snap snap/ --recursive
-          #snapcraft --use-lxd
-          #aws s3 cp *.snap s3://${UniqueName}/
+          snapcraft --use-lxd
+          aws s3 cp *.snap s3://${UniqueName}/
 
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=COMPLETE
           echo 'Exiting user data script'
