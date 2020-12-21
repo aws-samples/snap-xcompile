@@ -37,7 +37,7 @@ Resources:
             Resource: !Sub 'arn:aws:s3:::${UniqueName}/*'
           - Effect: Allow
             Action: 'ec2:CreateTags'
-            Resource: '*'
+            Resource: 'arn:aws:ex2:${AWS::Region}:*'
       Roles:
         - !Ref Arm64AccessRole
 
@@ -90,7 +90,7 @@ Resources:
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=COMPLETE
           echo 'Exiting user data script'
 
-          echo ${!AWS::Region}
+          echo ${AWS::Region}
 
 Outputs:
   InstanceId:
