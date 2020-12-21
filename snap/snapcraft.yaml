@@ -1,8 +1,8 @@
-name: hello-world
+name: hello_world
 version: '0.1'
-summary: RoboMaker Hello World
+summary: ROS Hello World
 description: |
-  AWS RoboMaker robot package with a rotating Turtlebot3
+  Continuously publishes a message to the /broadcast topic
 
 base: core18
 grade: devel 
@@ -16,5 +16,5 @@ parts:
     
 apps:
   launch:
-    command: rosrun hello_world talker.py
+    command: roslaunch hello_world broadcast.launch
     plugs: [network, network-bind]

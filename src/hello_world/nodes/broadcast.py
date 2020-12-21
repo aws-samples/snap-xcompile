@@ -6,12 +6,12 @@
 import rospy
 from std_msgs.msg import String
 
-topic='broadcaster'
+topic='broadcast'
 message='Hello from AWS'
 
-def talker():
+def broadcast():
     pub = rospy.Publisher(topic, String, queue_size=10)
-    rospy.init_node('talker', anonymous=True)
+    rospy.init_node('broadcast', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     while not rospy.is_shutdown():
         rospy.loginfo(message)
@@ -20,6 +20,6 @@ def talker():
 
 if __name__ == '__main__':
     try:
-        talker()
+        broadcast()
     except rospy.ROSInterruptException:
         pass
