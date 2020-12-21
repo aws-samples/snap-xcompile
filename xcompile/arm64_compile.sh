@@ -8,6 +8,12 @@ function get_status {
 			--query "Tags[0].Value" --output text)
 }
 
+# Check for snapcraft file
+if [[ ! -f $(pwd)/snap/snapcraft.yaml ]]; then
+    echo "[ERROR] Snapcraft config file not found"
+    exit -1
+fi
+
 # Create s3 bucket
 uuid=$(head -c 16 /proc/sys/kernel/random/uuid)
 name=arm64-snap-$uuid
@@ -23,7 +29,7 @@ aws s3 cp snap/ s3://$name/snap --recursive
 echo "- Setting up xcompile resources"
 stack_arn=$(aws cloudformation create-stack \
 	--stack-name $name \
-	--template-body file://arm64_cfn.yaml \
+	--template-body file://$(pwd)/xcompile/arm64_cfn.yaml \
 	--parameters ParameterKey=S3BucketName,ParameterValue=$name \
 	--capabilities CAPABILITY_IAM \
 	--query "StackId" --output text)
@@ -75,10 +81,10 @@ done
 # Download snap from bucket
 if [ $(get_status $ec2_id) == "COMPLETE" ]; then
 	echo -e "\n- Retrieving snap"
-	aws s3 cp s3://$name/*.snap .
+	aws s3 cp s3://$name/$(aws s3 ls s3://$name/ | awk '{print $4}' | grep -i .snap) .
 else
 	echo "[ERROR] Something went wrong!"
-	exit -1
+	exit -2
 fi
 
 # Delete s3 bucket and cfn stack
