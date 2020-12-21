@@ -94,9 +94,9 @@ if [ $(get_status $ec2_id) == "COMPLETE" ]; then
 	aws s3 cp s3://$name/$(aws s3 ls s3://$name/ | awk '{print $4}' | grep -i .snap) .
 else
 	echo "[ERROR] Something went wrong!"
+	cleanup
 	exit -2
 fi
 
 cleanup
-
 echo 'Finished successfully'
