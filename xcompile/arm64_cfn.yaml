@@ -37,7 +37,7 @@ Resources:
             Resource: !Sub 'arn:aws:s3:::${UniqueName}/*'
           - Effect: Allow
             Action: 'ec2:CreateTags'
-            Resource: 'arn:aws:ex2:${AWS::Region}:*'
+            Resource: 'arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/*'
       Roles:
         - !Ref Arm64AccessRole
 
