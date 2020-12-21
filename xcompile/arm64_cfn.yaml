@@ -87,9 +87,6 @@ Resources:
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=COMPLETE
           echo 'Exiting user data script'
 
-          echo ${AWS::Region}
-          echo ${Arm64Instance.AvailabilityZone}
-
 Outputs:
   InstanceId:
     Value: !Ref Arm64Instance
