@@ -10,9 +10,8 @@ Tool to cross-compile ROS snaps for arm64 machines using AWS
 replace content of snap/ and src/ folders with your own snapcraft and source code files respectively
 
 - cd ~/catkin_ws
-- mkdir xcompile
-- wget -P xcompile -O https://raw.githubusercontent.com/adi3/snap_xcompile/main/xcompile/arm64_cfn.yaml
-- wget -P xcompile -O https://raw.githubusercontent.com/adi3/snap_xcompile/main/xcompile/arm64_compile.sh
+- wget -P xcompile -N https://raw.githubusercontent.com/adi3/snap_xcompile/main/arm64_cfn.yaml
+- wget -P xcompile -N https://raw.githubusercontent.com/adi3/snap_xcompile/main/arm64_compile.sh
 - chmod +x xcompile/arm64_compile.sh
 - ./xcompile/arm64_compile.sh
 
