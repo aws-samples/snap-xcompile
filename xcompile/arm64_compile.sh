@@ -30,7 +30,7 @@ echo "- Setting up xcompile resources"
 stack_arn=$(aws cloudformation create-stack \
 	--stack-name $name \
 	--template-body file://$(pwd)/xcompile/arm64_cfn.yaml \
-	--parameters ParameterKey=S3BucketName,ParameterValue=$name \
+	--parameters ParameterKey=UniqueName,ParameterValue=$name \
 	--capabilities CAPABILITY_IAM \
 	--query "StackId" --output text)
 

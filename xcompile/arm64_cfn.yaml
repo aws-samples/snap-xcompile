@@ -1,5 +1,5 @@
 Parameters:
-  S3BucketName:
+  UniqueName:
     Type: String
 
 Resources:
@@ -60,7 +60,7 @@ Resources:
         - !Ref SSHSecurityGroup
       Tags:
         - Key: Name
-          Value: arm64-ubuntu
+          Value: !Ref UniqueName
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
@@ -79,16 +79,16 @@ Resources:
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=SNAPPING
           mkdir -p /tmp/robomaker_snap
           cd tmp/robomaker_snap
-          aws s3 cp s3://${S3BucketName}/src src/ --recursive
-          aws s3 cp s3://${S3BucketName}/snap snap/ --recursive
+          aws s3 cp s3://${UniqueName}/src src/ --recursive
+          aws s3 cp s3://${UniqueName}/snap snap/ --recursive
           #snapcraft --use-lxd
-          #aws s3 cp *.snap s3://${S3BucketName}/
+          #aws s3 cp *.snap s3://${UniqueName}/
 
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=COMPLETE
           echo 'Exiting user data script'
 
-          echo {AWS::Region}
-          echo {Arm64Instance.AvailabilityZone}
+          echo ${AWS::Region}
+          echo ${Arm64Instance.AvailabilityZone}
 
 Outputs:
   InstanceId:
