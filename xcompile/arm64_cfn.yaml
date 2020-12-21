@@ -38,6 +38,9 @@ Resources:
           - Effect: Allow
             Action: 'ec2:CreateTags'
             Resource: !Sub 'arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/*'
+            Condition:
+              StringEquals:
+                ec2:ResourceTag/Name: !Ref UniqueName
       Roles:
         - !Ref Arm64AccessRole
 
@@ -67,19 +70,15 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
-          az=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
-          region=${!az%%?}
           instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
           apt update
           apt install -y awscli
 
-          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=CONFIGURING
+          aws ec2 create-tags --resources $instance_id --region ${AWS::Region} --tags Key=Status,Value=CONFIGURING
           apt remove lxd-client -y
           snap install lxd
           lxd init --auto
           snap install snapcraft --classic
-
-          echo ${AWS::Region}
 
           aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=SNAPPING
           mkdir -p /tmp/robomaker_snap

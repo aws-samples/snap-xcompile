@@ -10,7 +10,7 @@ function get_status {
 
 # Check for snapcraft file
 if [[ ! -f $(pwd)/snap/snapcraft.yaml ]]; then
-    echo "[ERROR] Snapcraft config file not found"
+    echo "[ERROR] Snapcraft config file not found!"
     exit -1
 fi
 
