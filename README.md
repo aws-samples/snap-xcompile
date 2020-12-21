@@ -9,3 +9,5 @@ Scripts to cross-compile snaps for arm64 machines.
 - wget https://raw.githubusercontent.com/adi3/snap_xcompile/main/xcompile/arm64_compile.sh
 - chmod +x xcompile/arm64_compile.sh
 - ./xcompile/arm64_compile.sh
+
+...prepared snap will be present in ~/catkin_ws once script finishes..
