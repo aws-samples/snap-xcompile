@@ -1,5 +1,5 @@
 # Snap XCompile
-Tool to cross-compile snaps for arm64 machines using AWS
+Tool to cross-compile ROS snaps for arm64 machines using AWS
 
 ...the scripts use this hello world (https://github.com/adi3/rospy_hello_world) project as an example..
 ... for use in your own ROS projects, simple edit the snapcraft.yaml file...
