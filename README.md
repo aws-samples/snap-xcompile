@@ -7,6 +7,7 @@ Tool to cross-compile ROS snaps for arm64 machines using AWS
 ..set up aws cli... give link here...
 
 ...tool will look for your src/ and snap/ folders in your catkin workspace and use them to build the snap...
+replace content of snap/ and src/ folders with your own snapcraft and source code files respectively
 
 - cd ~/catkin_ws
 - mkdir xcompile && cd xcompile
