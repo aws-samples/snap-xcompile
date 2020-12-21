@@ -1,5 +1,5 @@
-# snap_xcompile
-Scripts to cross-compile snaps for arm64 machines.
+# Snap XCompile
+Scripts to cross-compile snaps for arm64 machines using AWS
 
 ...you need to have src/ and snap/ folders in your workspace with your code and config files...
 
