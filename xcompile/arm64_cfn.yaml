@@ -80,7 +80,7 @@ Resources:
           lxd init --auto
           snap install snapcraft --classic
 
-          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=SNAPPING
+          aws ec2 create-tags --resources $instance_id --region ${AWS::Region} --tags Key=Status,Value=SNAPPING
           mkdir -p /tmp/robomaker_snap
           cd tmp/robomaker_snap
           aws s3 cp s3://${UniqueName}/src src/ --recursive
@@ -88,7 +88,7 @@ Resources:
           snapcraft --use-lxd
           aws s3 cp *.snap s3://${UniqueName}/
 
-          aws ec2 create-tags --resources $instance_id --region $region --tags Key=Status,Value=COMPLETE
+          aws ec2 create-tags --resources $instance_id --region ${AWS::Region} --tags Key=Status,Value=COMPLETE
           echo 'Exiting user data script'
 
 Outputs:
