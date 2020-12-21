@@ -9,7 +9,7 @@ function get_status {
 }
 
 # Delete s3 bucket and cfn stack
-function exit_script {
+function cleanup {
 	echo "- Cleaning up resources"
 	aws s3 rb s3://$name --force
 	aws cloudformation delete-stack --stack-name $name
