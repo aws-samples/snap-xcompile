@@ -13,7 +13,12 @@ function cleanup {
 	echo "- Cleaning up resources"
 	aws s3 rb s3://$name --force
 	aws cloudformation delete-stack --stack-name $name
-    trap - SIGINT SIGTERM # clear the trap
+}
+
+# Custom response to sigint/sigterm
+function handle_sig {
+	cleanup
+	trap - SIGINT SIGTERM # clear the trap
     kill -- -$$ # Sends SIGTERM to child/sub processes
 }
 
