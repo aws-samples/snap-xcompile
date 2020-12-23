@@ -18,3 +18,7 @@ apps:
   launch:
     command: roslaunch hello_world broadcast.launch
     plugs: [network, network-bind]
+    
+  echo:
+    command: rostopic echo /broadcast
+    plugs: [network, network-bind]
