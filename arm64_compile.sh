@@ -104,4 +104,4 @@ else
 fi
 
 cleanup
-echo 'Finished successfully'
+echo 'Finished successfully!'
