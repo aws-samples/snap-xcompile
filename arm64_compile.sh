@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# TODO: Do manual ec2 create-key-pair and send keyname to CF template
+# Then use it to get-console-output and show it to users
+# Finally, manually delete-key-pair
+
 # Fetch status tag of an ec2 instance
 function get_status {
 	echo $(aws ec2 describe-tags \
