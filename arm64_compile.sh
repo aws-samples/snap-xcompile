@@ -4,6 +4,8 @@
 # Then use it to get-console-output and show it to users
 # Finally, manually delete-key-pair
 
+set -euf -o pipefail
+
 # Fetch status tag of an ec2 instance
 function get_status {
 	echo $(aws ec2 describe-tags \
