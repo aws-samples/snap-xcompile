@@ -58,7 +58,7 @@ Resources:
   Arm64Instance:
     Type: AWS::EC2::Instance
     Properties:
-      KeyName: ec2-keypair
+      KeyName: !Ref UniqueName
       InstanceType: t4g.micro
       ImageId: ami-087fa126bfdebc5c3  # Ubuntu18.04 Arm64
       IamInstanceProfile: !Ref Arm64InstanceProfile
