@@ -82,7 +82,7 @@ Resources:
 
           aws ec2 create-tags --resources $instance_id --region ${AWS::Region} --tags Key=Status,Value=SNAPPING
           mkdir -p /tmp/robomaker_snap
-          cd tmp/robomaker_snap
+          cd /tmp/robomaker_snap
           aws s3 cp s3://${UniqueName}/src src/ --recursive
           aws s3 cp s3://${UniqueName}/snap snap/ --recursive
           snapcraft --use-lxd
