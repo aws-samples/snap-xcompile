@@ -18,6 +18,7 @@ function get_status {
 function cleanup {
 	echo "- Cleaning up resources"
 	aws s3 rb s3://$name --force
+	aws ec2 delete-key-pair --key-name $name
 	aws cloudformation delete-stack --stack-name $name
 }
 
@@ -46,6 +47,9 @@ aws s3 mb s3://$name
 echo "- Uploading source code to bucket"
 aws s3 cp $(pwd)/src/ s3://$name/src --recursive
 aws s3 cp $(pwd)/snap/ s3://$name/snap --recursive
+
+echo "- Creating EC2 key pair"
+aws ec2 create-key-pair --key-name $name &> /dev/null
 
 # Initiate cfn stack
 echo "- Setting up xcompile resources"
