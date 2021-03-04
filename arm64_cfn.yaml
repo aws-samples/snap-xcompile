@@ -60,7 +60,7 @@ Resources:
     Properties:
       KeyName: ec2-keypair
       InstanceType: t4g.micro
-      ImageId: ami-087fa126bfdebc5c3  # Ubuntu18.04 Arm64
+      ImageId: ami-0c925af1500feb25d  # Ubuntu18.04 Arm64
       IamInstanceProfile: !Ref Arm64InstanceProfile
       SecurityGroups:
         - !Ref SSHSecurityGroup
