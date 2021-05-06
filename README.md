@@ -44,3 +44,13 @@ The finished snap will be downloaded to your workspace by the script
   ```
   sudo snap install --devmode <snap_name>
   ```
+  
+6. Confirm snap installation
+  ```
+  snap list
+  ```
+  
+7. Run ROS snap
+  ```
+  aws-hello-world.echo
+  ```
