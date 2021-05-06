@@ -52,5 +52,5 @@ The finished snap will be downloaded to your workspace by the script
   
 7. Run ROS snap
   ```
-  aws-hello-world.echo
+  hello-world.echo
   ```
