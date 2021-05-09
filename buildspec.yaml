@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Install phase
+      - apt update
+      - apt install snapd -y
+      - systemctl restart snapd.service
+      - snap install lxd
+      - lxd init --auto
+      - snap install snapcraft --classic
+  pre_build:
+    commands:
+      - echo Nothing to do in the pre_build phase...
+  build:
+    commands:
+      - echo Build started on `date`
+      - snapcraft --use-lxd
+  post_build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - target/testy.snap

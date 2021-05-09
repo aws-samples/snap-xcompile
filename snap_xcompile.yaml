@@ -1,15 +1,19 @@
 Parameters:
   UniqueName:
     Type: String
+  BuildType:
+    Type: String
+  BuildImage:
+    Type: String
 
 Resources:
-  Arm64InstanceProfile:
+  SxCInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
-        - !Ref Arm64AccessRole
+        - !Ref SxCAccessRole
 
-  Arm64AccessRole:
+  SxCAccessRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -23,9 +27,9 @@ Resources:
   RolePolicies:
     Type: AWS::IAM::Policy
     DependsOn:
-      - Arm64Instance
+      - SxCInstance
     Properties:
-      PolicyName: Arm64AccessPolicy
+      PolicyName: SxCAccessPolicy
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -42,7 +46,7 @@ Resources:
               StringEquals:
                 ec2:ResourceTag/Name: !Ref UniqueName
       Roles:
-        - !Ref Arm64AccessRole
+        - !Ref SxCAccessRole
 
 
   SSHSecurityGroup:
@@ -55,13 +59,12 @@ Resources:
         IpProtocol: tcp
         ToPort: 22
 
-  Arm64Instance:
+  SxCInstance:
     Type: AWS::EC2::Instance
     Properties:
-      KeyName: !Ref UniqueName
-      InstanceType: t4g.micro
-      ImageId: ami-087fa126bfdebc5c3  # Ubuntu18.04 Arm64
-      IamInstanceProfile: !Ref Arm64InstanceProfile
+      InstanceType: !Ref BuildType
+      ImageId: !Ref BuildImage #ami-087fa126bfdebc5c3 Ubuntu18.04 arm64
+      IamInstanceProfile: !Ref SxCInstanceProfile
       SecurityGroups:
         - !Ref SSHSecurityGroup
       Tags:
@@ -72,26 +75,33 @@ Resources:
           #!/bin/bash -xe
           instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
           apt update
-          apt install -y awscli
 
-          aws ec2 create-tags --resources $instance_id --region ${AWS::Region} --tags Key=Status,Value=CONFIGURING
+          echo '- Installing AWS tools'
+          apt install -y awscli
+          
+          echo '- Installing snapcraft'
           apt remove lxd-client -y
           snap install lxd
           lxd init --auto
           snap install snapcraft --classic
 
-          aws ec2 create-tags --resources $instance_id --region ${AWS::Region} --tags Key=Status,Value=SNAPPING
           mkdir -p /tmp/robomaker_snap
           cd /tmp/robomaker_snap
+
+          echo '- Retrieving source code from S3'
           aws s3 cp s3://${UniqueName}/src src/ --recursive
           aws s3 cp s3://${UniqueName}/snap snap/ --recursive
+
+          echo '- Snapping souce code'
           snapcraft --use-lxd
+
+          echo '- Uploading snap to S3'
           aws s3 cp *.snap s3://${UniqueName}/
 
-          aws ec2 create-tags --resources $instance_id --region ${AWS::Region} --tags Key=Status,Value=COMPLETE
-          echo 'Exiting user data script'
+          echo '- Exiting user data script'
+          aws ec2 create-tags --resources $instance_id --region ${AWS::Region} --tags Key=Status,Value=COMPLETED
 
 Outputs:
   InstanceId:
-    Value: !Ref Arm64Instance
+    Value: !Ref SxCInstance
 
