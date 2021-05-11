@@ -6,7 +6,7 @@ base_name='snap-xcompile'
 cfn_template='snap_xcompile.yaml'
 
 # Starting year for Ubuntu versions to list
-START_YEAR=21
+START_YEAR=16
 
 ARCHITECTURES=("x86_64" "arm64")
 # x86_64 and ARM instances
@@ -223,10 +223,6 @@ while [ $(get_status $ec2_id) == 'None' ]; do
 	if [[ $num -le 1 ]]; then
 		echo -n "."
 	else
-		# Get start and end timestamps of latest log output
-		# end=$(grep -Eo '\[\s*([0-9]+\.[0-9]+)\]' $log_file | tail -n 1 | sed 's/[][]//g' | xargs)
-		# start=$(grep -Eo '\[\s*([0-9]+\.[0-9]+)\]' $log_file | head -n 1 | sed 's/[][]//g' | xargs)
-		
 		tss=$(grep -Eo '\[\s*([0-9]+\.[0-9]+)\]' $log_file | sed 's/[][]//g' | xargs)
 		start=$(echo $tss | cut -d' ' -f1)
 		end=$(echo $tss | rev | cut -d' ' -f1 | rev)
