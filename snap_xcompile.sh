@@ -6,7 +6,7 @@ base_name='snap-xcompile'
 cfn_template='snap_xcompile.yaml'
 
 # Starting year for Ubuntu versions to list
-START_YEAR=16
+START_YEAR=21
 
 ARCHITECTURES=("x86_64" "arm64")
 # x86_64 and ARM instances
@@ -162,7 +162,7 @@ done
 
 # Create s3 bucket
 # Create unique id for AWS resources
-uuid=$(uuidgen | awk -F- '{print $1}')
+uuid=$(uuidgen | awk -F- '{print tolower($1)}')
 name="$base_name-$uuid"
 echo "- Creating S3 bucket"
 aws s3 mb s3://$name
@@ -213,19 +213,23 @@ echo -e "\n\t- Instance ID: $ec2_id"
 while [ $(get_status $ec2_id) == 'None' ]; do
 
 	aws ec2 get-console-output \
-    --instance-id $ec2_id \
-    --latest \
-    --query "Output" \
-    --output text > $log_file
+	    --instance-id $ec2_id \
+	    --latest \
+	    --query "Output" \
+	    --output text > $log_file
 
-  num=$(wc -l $log_file | awk '{ print $1 }')
+	num=$(wc -l $log_file | awk '{ print $1 }')
 
 	if [[ $num -le 1 ]]; then
 		echo -n "."
 	else
 		# Get start and end timestamps of latest log output
-		start=$(grep -Eo '\[\s*([0-9]+\.[0-9]+)\]' $log_file | head -n 1 | sed 's/[][]//g' | xargs)
-		end=$(grep -Eo '\[\s*([0-9]+\.[0-9]+)\]' $log_file | tail -n 1 | sed 's/[][]//g' | xargs)
+		# end=$(grep -Eo '\[\s*([0-9]+\.[0-9]+)\]' $log_file | tail -n 1 | sed 's/[][]//g' | xargs)
+		# start=$(grep -Eo '\[\s*([0-9]+\.[0-9]+)\]' $log_file | head -n 1 | sed 's/[][]//g' | xargs)
+		
+		tss=$(grep -Eo '\[\s*([0-9]+\.[0-9]+)\]' $log_file | sed 's/[][]//g' | xargs)
+		start=$(echo $tss | cut -d' ' -f1)
+		end=$(echo $tss | rev | cut -d' ' -f1 | rev)
 
 		if [[ $log_num == $num ]]; then
 			echo -n "."
@@ -242,7 +246,7 @@ while [ $(get_status $ec2_id) == 'None' ]; do
 		# Print log output if timestamp is within bounds
 		while IFS= read -r line; do
 			ts=$(echo $line | grep -Eo '\[\s*([0-9]+\.[0-9]+)\]' | sed 's/[][]//g' | xargs || true)
-
+			
 			if [[ ( -z $ts ) || ( $log_start < $ts && $ts < $log_end ) ]]; then
 				echo $line
 				sleep $log_delay

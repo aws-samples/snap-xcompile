@@ -1,0 +1,24 @@
+name: hello-world
+version: '0.1'
+summary: ROS Hello World
+description: |
+  Continuously publishes a message to the /broadcast topic
+
+base: core18
+grade: devel 
+confinement: devmode
+
+parts:
+  robot-ws:
+    plugin: catkin
+    source: .
+    build-packages: [lsb-release]
+    
+apps:
+  launch:
+    command: roslaunch hello_world broadcast.launch
+    plugs: [network, network-bind]
+    
+  echo:
+    command: rostopic echo /broadcast
+    plugs: [network, network-bind]
