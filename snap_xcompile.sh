@@ -68,29 +68,27 @@ function get_ami {
     --query "reverse(sort_by(Images, &Name))[:1].[Description,Architecture,ImageId]"
   )
 
-  if [[ $ami == "[]" ]]; then
-  	continue
+  if [[ $ami != "[]" ]]; then
+	  echo -e "\t- Ubuntu $1 ($2)"
+	
+	  # Ex: Canonical, Ubuntu, 18.04 LTS, amd64 bionic image build on 2021-05-04 ami-0a1e248de68099571 x86_64
+	  ami=$(echo $ami | sed 's/"//g; s/,//g; s/\[//g; s/\]//g')
+	
+	  params=()
+	  for param in $ami; do
+	  	params+=($param)
+	  done
+	
+	  if [[ "${params[3]}" == "LTS" ]]; then
+	  	params[2]="${params[2]} LTS"
+	  	params[4]=${params[5]}
+	  	params[9]=${params[10]}
+	  	params[10]=${params[11]}
+	  fi
+	  
+	  ami_names+=("${params[1]} ${params[2]} (${params[4]}) - ${params[9]}")
+	  ami_ids+=("${params[10]}")
   fi
-
-	echo -e "\t- Ubuntu $1 ($2)"
-
-  # Ex: Canonical, Ubuntu, 18.04 LTS, amd64 bionic image build on 2021-05-04 ami-0a1e248de68099571 x86_64
-  ami=$(echo $ami | sed 's/"//g; s/,//g; s/\[//g; s/\]//g')
-
-  params=()
-  for param in $ami; do
-  	params+=($param)
-  done
-
-  if [[ "${params[3]}" == "LTS" ]]; then
-  	params[2]="${params[2]} LTS"
-  	params[4]=${params[5]}
-  	params[9]=${params[10]}
-  	params[10]=${params[11]}
-  fi
-
-	ami_names+=("${params[1]} ${params[2]} (${params[4]}) - ${params[9]}")
-	ami_ids+=("${params[10]}")
 }
 
 
@@ -163,8 +161,8 @@ done
 
 
 # Create s3 bucket
-# Nifty way to get a unique string
-uuid=$(date | md5 | head -c8 | xargs)
+# Create unique id for AWS resources
+uuid=$(uuidgen | awk -F- '{print $1}')
 name="$base_name-$uuid"
 echo "- Creating S3 bucket"
 aws s3 mb s3://$name
