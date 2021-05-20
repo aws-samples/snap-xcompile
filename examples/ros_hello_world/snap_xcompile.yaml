@@ -63,9 +63,9 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref BuildType
-      KeyName: !Ref UniqueName
       ImageId: !Ref BuildImage #ami-087fa126bfdebc5c3 Ubuntu18.04 arm64
       IamInstanceProfile: !Ref SxCInstanceProfile
+      KeyName: !Ref UniqueName
       SecurityGroups:
         - !Ref SSHSecurityGroup
       Tags:
