@@ -1,22 +1,21 @@
-/*
- * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * SPDX-License-Identifier: MIT-0
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this
- * software and associated documentation files (the "Software"), to deal in the Software
- * without restriction, including without limitation the rights to use, copy, modify,
- * merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 #!/bin/bash
+
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this
+# software and associated documentation files (the "Software"), to deal in the Software
+# without restriction, including without limitation the rights to use, copy, modify,
+# merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 set -Eeuf -o pipefail
 
@@ -28,6 +27,7 @@ START_YEAR=16
 
 LTS_YEARS=(16 18 20)
 ARCHITECTURES=("x86_64" "arm64")
+TARGET_OPTS=("x86_64" "arm64")
 # x86_64 and ARM instances
 # Need Nitro hypervisor to get console logs
 TYPES=("t3.micro" "t4g.micro")
@@ -37,6 +37,9 @@ ami_names=()
 ami_ids=()
 ami_chosen=-1
 type_chosen=-1
+
+target=''
+source=''
 
 log_num=-1
 log_start=-1
@@ -106,7 +109,7 @@ function get_ami {
 	  	params[10]=${params[11]}
 	  fi
 	  
-	  ami_names+=("${params[1]} ${params[2]} (${params[4]}) - ${params[9]}")
+	  ami_names+=("${params[1]} ${params[2]} (${params[4]})")
 	  ami_ids+=("${params[10]}")
   fi
 }
@@ -116,18 +119,14 @@ function get_ami {
 function get_amis {
 	for year in "${LTS_YEARS[@]}"; do
 		version="$year.04"
-
-		for arch in "${ARCHITECTURES[@]}"; do
-			get_ami $version $arch
-		done
+		get_ami $version $target
 	done
 }
 
 
+# Determine opt index for ec2 instance type
 function get_type {
-	arch=$(echo ${ami_names[$ami_chosen]} | awk '{print $NF}')
-
-	case $arch in
+	case $target in
 	  "x86_64")
 	    echo -n 0
 	    ;;
@@ -141,31 +140,88 @@ function get_type {
 }
 
 
+# Sanity check for --source and --target arguments
+function parse_args {
+	if [[ $# -ne 4 ]]; then
+		echo -e "[ERROR] Found unexpected number of arguments"
+		echo -e "\t- Expected form: ./xcompile.sh --target <target_architecture> --source <path_to_application_directory>"
+		exit
+	fi
+
+	if [[ $1 != "--target" ]] && [[ $3 != "--target" ]]; then
+		echo "[ERROR] Target architecture not provided!"
+		echo -e "\t- Expected form: ./xcompile.sh --target <target_architecture> --source <path_to_application_directory>"
+		exit
+	fi
+
+	if [[ $1 != "--source" ]] && [[ $3 != "--source" ]]; then
+		echo "[ERROR] Application directory not provided!"
+		echo -e "\t- Expected form: ./xcompile.sh --target <target_architecture> --source <path_to_application_directory>"
+		exit
+	fi
+
+	for arg in "$@"; do
+		case $arg in
+			--target)
+				if printf '%s\n' "${TARGET_OPTS[@]}" | grep -q "^${2}$"; then
+				    target=$2
+					echo "- Target architecture set to $target"
+				else
+					echo "[ERROR] $2 not a valid target option. Please select from$(printf ' [%s]' "${TARGET_OPTS[@]}")."
+					exit
+				fi
+				shift
+		      	;;
+	    	--source)
+				if [[ -d $2 ]]; then
+					source="$2"
+		    		echo "- Application directory set to $source"
+		      	else
+				    echo "[ERROR] $2 not a valid directory. Please check your input."
+				    exit
+				fi
+		      	shift
+	      		;;
+	    	*)
+	      		shift
+	      		;;
+	  	esac
+	done
+}
+
+
 # ----------------------------------------------------
 # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 # ----------------------------------------------------
 
 
+# Parse CLI arguments
+echo "Parsing command-line arguments..."
+parse_args $@
+
+
 # Check for snapcraft file
-if [[ ! -f $(pwd)/snap/snapcraft.yaml ]]; then
+if [[ ! -f "$source/snap/snapcraft.yaml" ]]; then
     echo "[ERROR] Snapcraft config file not found!"
     exit -1
 fi
 
+
 # Get info on latest AMIs
 echo "Fetching latest buildfarm options..."
 get_amis
-echo
+
 
 # Allow user to select preferred AMI
 PS3="Select desired build machine: "
 select ami in "${ami_names[@]}"; do
-		ami_chosen=$REPLY-1
-		type_chosen=$(get_type)
-    echo -e "\tImage selected: ${ami_names[$ami_chosen]}"
+	ami_chosen=$REPLY-1
+	type_chosen=$(get_type)
+    echo -e "\tImage selected: ${ami_names[$ami_chosen]} - $target"
     break
 done
 
+exit
 
 # Create s3 bucket
 # Create unique id for AWS resources
@@ -177,13 +233,16 @@ aws s3 mb s3://$name
 
 # Upload code files to bucket
 echo "- Uploading source code to bucket"
-aws s3 cp $(pwd)/src/ s3://$name/src --recursive
-aws s3 cp $(pwd)/snap/ s3://$name/snap --recursive
+#aws s3 cp "$source/src/" s3://$name/src --recursive
+#aws s3 cp "$source/snap/" s3://$name/snap --recursive
+aws s3 cp "$source/" s3://$name/ --recursive
 
 
 # Create EC2 keypair
 echo "- Creating keypair for EC2 access"
 aws ec2 create-key-pair --key-name $name &> /dev/null
+
+
 
 # Initiate cfn stack
 echo "- Setting up Snap xCompile resources"
@@ -198,6 +257,7 @@ stack_arn=$(aws cloudformation create-stack \
 
 echo -e "\t- Stack Name: $name"
 # echo -e "\t- Stack ARN: $stack_arn"
+
 
 
 # Wait for ec2 instance to launch
@@ -217,6 +277,7 @@ done
 
 echo -e "\n- Configuring machine\c"
 echo -e "\n\t- Instance ID: $ec2_id"
+
 
 
 # Stream console output from ec2 instance
@@ -261,6 +322,7 @@ while [ $(get_status $ec2_id) == 'None' ]; do
 	fi
 	sleep 1
 done
+
 
 
 # Download snap from bucket
