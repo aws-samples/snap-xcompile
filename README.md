@@ -32,7 +32,7 @@ cd snap-xcompile/
 chmod +x src/sxc.sh
 ```
 
-3. Snap [example ROS project](https://github.com/aws-samples/snap-xcompile/tree/main/examples/ros_hello_world) for the desired target architecture (*arm64* or *x86_64*).
+3. Snap [example ROS project](examples/ros_hello_world) for the desired target architecture (*arm64* or *x86_64*).
 
 ```
 ./src/sxc.sh --source examples/ros_hello_world/ --arch arm64
