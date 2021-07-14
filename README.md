@@ -9,6 +9,7 @@ Snap xCompile takes the idea of remote builds and uses a variety of AWS services
 
 Currently, Snap xCompile supports snapping for **x86_64** and **arm64** targets.
 
+
 ## Notes
 * You should have AWS CLI tools [installed](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) on your workstation
 * This repository uses a [ROS Hello World](https://github.com/adi3/rospy_hello_world) project as an example
@@ -17,19 +18,20 @@ Currently, Snap xCompile supports snapping for **x86_64** and **arm64** targets.
 * Check status of the CloudFormation stack created by the script to track progress
 * Access EC2 instance log under _/var/log/cloud-init-output.log_ for further execution details
 
+
 # Example Usage
 
 1. Download the project to your local system.
 
 ```
 git clone https://github.com/aws-samples/snap-xcompile.git
-
 ```
 
 2. Give execution permission to the shell script.
 
 ```
 cd snap-xcompile/
+
 chmod +x src/snap_xcompile.sh
 ```
 
@@ -37,15 +39,14 @@ chmod +x src/snap_xcompile.sh
 
 ```
 ./src/snap_xcompile.sh --source examples/ros_hello_world/ --arch arm64
-
 ```
 
 4. The desired snap will be located in your working directory once the script finishes execution.
 ```
 ls .
-
 ```
 [SCREENSHOT HERE]
+
 
 ## Test Deployment
 
@@ -56,19 +57,21 @@ ls .
   sudo snap install --devmode <snap_name>
   ```
   
-3. Confirm snap installation
+3. Confirm snap installation.
   ```
   snap list
   ```
   
-4. Run ROS snap
+4. Run ROS snap.
   ```
   hello-world.echo
   ```
 
+
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+
 
 ## License
 
