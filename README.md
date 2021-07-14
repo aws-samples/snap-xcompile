@@ -57,13 +57,8 @@ ls .
 ```
 sudo snap install --devmode FILENAME.snap
 ```
-  
-3. Confirm snap installation.
-```
-snap list
-```
-  
-4. Invoke **echo** function from the ROS snap.
+
+3. Invoke **echo** function from the ROS snap.
 ```
 hello-world.echo
 ```
