@@ -64,9 +64,9 @@ snap list
 ```
   
 4. Invoke **echo** function from the ROS snap.
-  ```
-  hello-world.echo
-  ```
+```
+hello-world.echo
+```
 
 
 ## Security
