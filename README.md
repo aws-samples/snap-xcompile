@@ -1,8 +1,10 @@
 # Snap xCompile
-Tool to cross-compile ROS snaps for x86_64 and arm64 machines using AWS
+Tool to cross-compile ROS snaps for x86_64 and arm64 machines using AWS.
 
 ## Overview
-Snap xCompile takes the idea of remote builds and uses a variety of AWS services to build snaps without exposing your source code. The tool spins up a remote server hosted on AWS, gathers all relevant applications files with their dependencies, executes the snapping process, and fetches the completed snap to the host workstation. The result is a seamless one-step method to cross-compile snaps that requires zero configuration effort from the user.
+Snap xCompile takes the idea of remote builds and uses a variety of AWS services to build snaps without exposing your source code.
+
+The tool spins up a remote server hosted on AWS, gathers all relevant applications files with their dependencies, executes the snapping process, and fetches the completed snap to the host workstation. The result is a seamless one-step method to cross-compile snaps that requires zero configuration effort from the user.
 
 Currently, Snap xCompile supports snapping for **x86_64** and **arm64** targets.
 
