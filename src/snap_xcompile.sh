@@ -20,14 +20,14 @@
 set -Eeuf -o pipefail
 
 base_name='snap-xcompile'
-cfn_template='snap_xcompile.yaml'
+cfn_template="$(dirname $0)/snap_xcompile.yaml"
 
 # Starting year for Ubuntu versions to list
 START_YEAR=16
 
 LTS_YEARS=(16 18 20)
 ARCHITECTURES=("x86_64" "arm64")
-TARGET_OPTS=("x86_64" "arm64")
+ARCH_OPTS=("x86_64" "arm64")
 # x86_64 and ARM instances
 # Need Nitro hypervisor to get console logs
 TYPES=("t3.micro" "t4g.micro")
@@ -38,7 +38,7 @@ ami_ids=()
 ami_chosen=-1
 type_chosen=-1
 
-target=''
+arch=''
 source=''
 
 log_num=-1
@@ -119,14 +119,14 @@ function get_ami {
 function get_amis {
 	for year in "${LTS_YEARS[@]}"; do
 		version="$year.04"
-		get_ami $version $target
+		get_ami $version $arch
 	done
 }
 
 
 # Determine opt index for ec2 instance type
 function get_type {
-	case $target in
+	case $arch in
 	  "x86_64")
 	    echo -n 0
 	    ;;
@@ -140,34 +140,34 @@ function get_type {
 }
 
 
-# Sanity check for --source and --target arguments
+# Sanity check for --source and --arch arguments
 function parse_args {
 	if [[ $# -ne 4 ]]; then
 		echo -e "[ERROR] Found unexpected number of arguments"
-		echo -e "\t- Expected form: ./xcompile.sh --target <target_architecture> --source <path_to_application_directory>"
+		echo -e "\t- Expected form: ./xcompile.sh --arch <target_architecture> --source <path_to_application_directory>"
 		exit
 	fi
 
-	if [[ $1 != "--target" ]] && [[ $3 != "--target" ]]; then
+	if [[ $1 != "--arch" ]] && [[ $3 != "--arch" ]]; then
 		echo "[ERROR] Target architecture not provided!"
-		echo -e "\t- Expected form: ./xcompile.sh --target <target_architecture> --source <path_to_application_directory>"
+		echo -e "\t- Expected form: ./xcompile.sh --arch <target_architecture> --source <path_to_application_directory>"
 		exit
 	fi
 
 	if [[ $1 != "--source" ]] && [[ $3 != "--source" ]]; then
 		echo "[ERROR] Application directory not provided!"
-		echo -e "\t- Expected form: ./xcompile.sh --target <target_architecture> --source <path_to_application_directory>"
+		echo -e "\t- Expected form: ./xcompile.sh --arch <target_architecture> --source <path_to_application_directory>"
 		exit
 	fi
 
 	for arg in "$@"; do
 		case $arg in
-			--target)
-				if printf '%s\n' "${TARGET_OPTS[@]}" | grep -q "^${2}$"; then
-				    target=$2
-					echo "- Target architecture set to $target"
+			--arch)
+				if printf '%s\n' "${ARCH_OPTS[@]}" | grep -q "^${2}$"; then
+				    arch=$2
+					echo "- Target architecture set to $arch"
 				else
-					echo "[ERROR] $2 not a valid target option. Please select from$(printf ' [%s]' "${TARGET_OPTS[@]}")."
+					echo "[ERROR] $2 not a valid archiecture option. Please select from$(printf ' [%s]' "${ARCH_OPTS[@]}")."
 					exit
 				fi
 				shift
@@ -217,11 +217,11 @@ PS3="Select desired build machine: "
 select ami in "${ami_names[@]}"; do
 	ami_chosen=$REPLY-1
 	type_chosen=$(get_type)
-    echo -e "\tImage selected: ${ami_names[$ami_chosen]} - $target"
+    echo -e "\tImage selected: ${ami_names[$ami_chosen]} - $arch"
     break
 done
 
-exit
+
 
 # Create s3 bucket
 # Create unique id for AWS resources
@@ -233,8 +233,6 @@ aws s3 mb s3://$name
 
 # Upload code files to bucket
 echo "- Uploading source code to bucket"
-#aws s3 cp "$source/src/" s3://$name/src --recursive
-#aws s3 cp "$source/snap/" s3://$name/snap --recursive
 aws s3 cp "$source/" s3://$name/ --recursive
 
 

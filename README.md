@@ -17,40 +17,51 @@ Currently, Snap xCompile supports snapping for **x86_64** and **arm64** targets.
 * Check status of the CloudFormation stack created by the script to track progress
 * Access EC2 instance log under _/var/log/cloud-init-output.log_ for further execution details
 
-# Usage
+# Example usage
 
-1. Download scripts to your workspace
-  ```
-  cd ~/catkin_ws
-  wget -N https://raw.githubusercontent.com/adi3/snap_xcompile/main/snap_xcompile.yaml
-  wget -N https://raw.githubusercontent.com/adi3/snap_xcompile/main/snap_xcompile.sh
-  ```
-  
-2. Give execution permissions
-  ```
-  chmod +x snap_xcompile.sh
-  ```
-  
-3. Initiate snapping
-  ```
-  ./snap_xcompile.sh
-  ```
+1. Download the project to your local system.
 
-The finished snap will be downloaded to your workspace by the script
+```
+git clone https://github.com/aws-samples/snap-xcompile.git
 
-4. Transfer snap to your target system
+```
 
-5. Install snap
+2. Give execution permission to the shell script.
+
+```
+cd snap-xcompile/
+chmod +x src/snap_xcompile.sh
+```
+
+3. Snap [example ROS project](https://github.com/aws-samples/snap-xcompile/tree/main/examples/ros_hello_world) for the desired target architecture (*arm64* or *x86_64*).
+
+```
+./src/snap_xcompile.sh --source examples/ros_hello_world/ --arch arm64
+
+```
+
+4. The desired snap will be located in your working directory once the script finishes execution.
+```
+ls .
+
+```
+[SCREENSHOT HERE]
+
+## Test Deployment
+
+1. Transfer snap to your target system.
+
+2. Install snap.
   ```
   sudo snap install --devmode <snap_name>
   ```
   
-6. Confirm snap installation
+3. Confirm snap installation
   ```
   snap list
   ```
   
-7. Run ROS snap
+4. Run ROS snap
   ```
   hello-world.echo
   ```
