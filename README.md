@@ -52,7 +52,7 @@ ls .
 
 1. Transfer snap to your target system.
 
-2. Install snap.
+2. Install snap. Replace *<filename>* with name of the snap produced by Snap xCompile.
   ```
   sudo snap install --devmode <filename>.snap
   ```
