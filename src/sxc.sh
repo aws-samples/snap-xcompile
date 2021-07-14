@@ -20,7 +20,7 @@
 set -Eeuf -o pipefail
 
 base_name='snap-xcompile'
-cfn_template="$(dirname $0)/snap_xcompile.yaml"
+cfn_template="$(dirname $0)/sxc.yaml"
 
 # Starting year for Ubuntu versions to list
 START_YEAR=16
@@ -144,19 +144,19 @@ function get_type {
 function parse_args {
 	if [[ $# -ne 4 ]]; then
 		echo -e "[ERROR] Found unexpected number of arguments"
-		echo -e "\t- Expected form: ./xcompile.sh --arch <target_architecture> --source <path_to_application_directory>"
+		echo -e "\t- Expected form: ./sxc.sh --source <path_to_application_directory> --arch <target_architecture>"
 		exit
 	fi
 
 	if [[ $1 != "--arch" ]] && [[ $3 != "--arch" ]]; then
 		echo "[ERROR] Target architecture not provided!"
-		echo -e "\t- Expected form: ./xcompile.sh --arch <target_architecture> --source <path_to_application_directory>"
+		echo -e "\t- Expected form: ./sxc.sh --source <path_to_application_directory> --arch <target_architecture>"
 		exit
 	fi
 
 	if [[ $1 != "--source" ]] && [[ $3 != "--source" ]]; then
 		echo "[ERROR] Application directory not provided!"
-		echo -e "\t- Expected form: ./xcompile.sh --arch <target_architecture> --source <path_to_application_directory>"
+		echo -e "\t- Expected form: ./sxc.sh --source <path_to_application_directory> --arch <target_architecture>"
 		exit
 	fi
 
