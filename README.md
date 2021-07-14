@@ -6,13 +6,13 @@ Snap xCompile takes the idea of remote builds and uses a variety of AWS services
 
 The tool spins up a remote server hosted on AWS, gathers all relevant applications files with their dependencies, executes the snapping process, and fetches the completed snap to the host workstation. The result is a seamless one-step method to cross-compile snaps that requires zero configuration effort from the user.
 
-Currently, Snap xCompile supports snapping for **x86_64** and **arm64** targets.
+Currently, Snap xCompile supports snapping for **x86-64** and **arm64** targets.
 
 ![Pipeline for Snap xCompile](images/workflow.png)
 
 
 ## Prerequisties
-* An [AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/).
+* An [AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
 * AWS CLI tools [installed](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) on your workstation
 
 
@@ -29,13 +29,13 @@ git clone https://github.com/aws-samples/snap-xcompile.git
 ```
 cd snap-xcompile/
 
-chmod +x src/snap_xcompile.sh
+chmod +x src/sxc.sh
 ```
 
 3. Snap [example ROS project](https://github.com/aws-samples/snap-xcompile/tree/main/examples/ros_hello_world) for the desired target architecture (*arm64* or *x86_64*).
 
 ```
-./src/snap_xcompile.sh --source examples/ros_hello_world/ --arch arm64
+./src/sxc.sh --source examples/ros_hello_world/ --arch arm64
 ```
 
 This step will take several minutes to finish. Go ahead and take that much-needed break in the meantime!
