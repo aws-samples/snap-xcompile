@@ -1,22 +1,16 @@
 # Snap xCompile
 Tool to cross-compile ROS snaps for x86_64 and arm64 machines using AWS
 
-Roboticists often develop software on one platform (say, a laptop) and run their apps on another (say, a robot SBC). A lot of times, these platforms have different chip architectures, making cross-compiling a necessity.
+Snap xCompile takes the idea of remote builds and uses a variety of AWS services to build snaps without exposing your source code. The tool spins up a remote server hosted on AWS, gathers all relevant applications files with their dependencies, executes the snapping process, and fetches the completed snap to the host workstation. The result is a seamless one-step method to cross-compile snaps that requires zero configuration effort from the user.
 
-[Snapcraft](https://snapcraft.io/), although a nifty and simple tool for building snaps, does not currently support cross-compiling. Running it on docker images of the target architecture fails because snapcraft depends on _systemd_, which is usually disabled in docker containers to enhance security and isolation. Although it is possible to configure a docker container to run systemd, I found that snap tools stopped working when the host and container architectures were different. Snapcraft does offer the capability to do [remote builds](https://snapcraft.io/docs/remote-build) for different architectures, but this uploads your code to [Launchpad](https://launchpad.net/) and makes it publicly available. Pretty much a deal breaker if you want to keep your code private.
-
-Snap xCompile takes the idea of remote builds and uses a variety of AWS services to build snaps without exposing your source code. The tools spins up an EC2 instance with the the target architecture, uploads your code to a (private and ephemeral) S3 bucket, builds the snap and fetches it to your host workstation. The result is a seamless one-command method to build snaps when host and target architectures differ.
+![Pipeline for Snap xCompile](images/workflow.png)
 
 Currently, Snap xCompile supports snapping for **x86_64** and **arm64** targets.
 
 
-## Notes
-* You should have AWS CLI tools [installed](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) on your workstation
-* This repository uses a [ROS Hello World](https://github.com/adi3/rospy_hello_world) project as an example
-* When snapping your own software, the _src/_ directory will contain the code you want snapped
-* Some steps in the script take several minutes to finish; patience you must have
-* Check status of the CloudFormation stack created by the script to track progress
-* Access EC2 instance log under _/var/log/cloud-init-output.log_ for further execution details
+## Prerequisties
+* An [AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/).
+* AWS CLI tools [installed](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) on your workstation
 
 
 # Example Usage
@@ -41,6 +35,10 @@ chmod +x src/snap_xcompile.sh
 ./src/snap_xcompile.sh --source examples/ros_hello_world/ --arch arm64
 ```
 
+This step will take several minutes to finish. Go ahead and take that much-needed break in the meantime!
+
+[SCREENCAST here]
+
 4. The desired snap will be located in your working directory once the script finishes execution.
 ```
 ls .
@@ -53,19 +51,19 @@ ls .
 1. Transfer snap to your target system.
 
 2. Install snap. Replace **filename** with name of the snap produced by Snap xCompile.
-  ```
-  sudo snap install --devmode filename.snap
-  ```
+```
+sudo snap install --devmode filename.snap
+```
   
 3. Confirm snap installation.
-  ```
-  snap list
-  ```
+```
+snap list
+```
   
 4. Invoke _echo_ from the ROS snap.
-  ```
-  hello-world.echo
-  ```
+```
+hello-world.echo
+```
 
 
 ## Security
