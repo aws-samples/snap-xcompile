@@ -17,7 +17,7 @@ Currently, Snap xCompile supports snapping for **x86_64** and **arm64** targets.
 * Check status of the CloudFormation stack created by the script to track progress
 * Access EC2 instance log under _/var/log/cloud-init-output.log_ for further execution details
 
-# Example usage
+# Example Usage
 
 1. Download the project to your local system.
 
