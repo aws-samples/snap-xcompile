@@ -68,6 +68,8 @@ snap list
 hello-world.echo
 ```
 
+![Test Deployment](images/test-deployment.png)
+
 
 ## Security
 
