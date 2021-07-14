@@ -60,10 +60,10 @@ sudo snap install --devmode filename.snap
 snap list
 ```
   
-4. Invoke _echo_ from the ROS snap.
-```
-hello-world.echo
-```
+4. Invoke **echo** function from the ROS snap.
+  ```
+  hello-world.echo
+  ```
 
 
 ## Security
