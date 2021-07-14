@@ -23,13 +23,13 @@ Currently, Snap xCompile supports snapping for **x86_64** and **arm64** targets.
 
 ```
 git clone https://github.com/aws-samples/snap-xcompile.git
-
 ```
 
 2. Give execution permission to the shell script.
 
 ```
 cd snap-xcompile/
+
 chmod +x src/snap_xcompile.sh
 ```
 
@@ -37,13 +37,11 @@ chmod +x src/snap_xcompile.sh
 
 ```
 ./src/snap_xcompile.sh --source examples/ros_hello_world/ --arch arm64
-
 ```
 
 4. The desired snap will be located in your working directory once the script finishes execution.
 ```
 ls .
-
 ```
 [SCREENSHOT HERE]
 
@@ -56,12 +54,12 @@ ls .
   sudo snap install --devmode <snap_name>
   ```
   
-3. Confirm snap installation
+3. Confirm snap installation.
   ```
   snap list
   ```
   
-4. Run ROS snap
+4. Run ROS snap.
   ```
   hello-world.echo
   ```
