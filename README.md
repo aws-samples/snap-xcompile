@@ -62,7 +62,7 @@ ls .
   snap list
   ```
   
-4. Run ROS snap.
+4. Invoke _echo_ from the ROS snap.
   ```
   hello-world.echo
   ```
