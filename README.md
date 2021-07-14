@@ -54,7 +54,7 @@ ls .
 
 2. Install snap.
   ```
-  sudo snap install --devmode <snap_name>
+  sudo snap install --devmode <filename>.snap
   ```
   
 3. Confirm snap installation.
