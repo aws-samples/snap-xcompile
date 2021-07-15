@@ -8,7 +8,7 @@ The tool spins up a remote server hosted on AWS, gathers all relevant applicatio
 
 Currently, Snap xCompile supports snapping for **x86-64** and **arm64** targets.
 
-![Pipeline for Snap xCompile](images/workflow.png)
+![Snap xCompile Pipeline](assets/workflow.png)
 
 
 ## Prerequisties
@@ -16,7 +16,7 @@ Currently, Snap xCompile supports snapping for **x86-64** and **arm64** targets.
 * AWS CLI tools [installed](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) on your workstation
 
 
-# Example Usage
+## Example Usage
 
 1. Download the project to your local system.
 
@@ -40,13 +40,13 @@ chmod +x src/sxc.sh
 
 This step will take several minutes to finish. Go ahead and take that much-needed break in the meantime!
 
-[SCREENCAST here]
+![Snap xCompile Demo](assets/sxc-demo-comp.gif)
 
 4. The desired snap will be located in your working directory once the script finishes execution.
 ```
 ls .
 ```
-![File List](images/file-list.png)
+![File List](assets/file-list.png)
 
 
 ## Test Deployment
@@ -63,7 +63,7 @@ sudo snap install --devmode FILENAME.snap
 hello-world.echo
 ```
 
-![Test Deployment](images/test-deployment.png)
+![Test Deployment](assets/test-deployment.png)
 
 
 ## Security
