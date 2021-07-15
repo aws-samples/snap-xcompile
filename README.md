@@ -46,6 +46,7 @@ This step will take several minutes to finish. Go ahead and take that much-neede
 ```
 ls .
 ```
+
 ![File List](assets/file-list.png)
 
 
