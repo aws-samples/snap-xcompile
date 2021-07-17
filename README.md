@@ -57,11 +57,16 @@ ls .
 2. Install snap. Replace **FILENAME** with name of the snap produced by Snap xCompile.
 ```
 sudo snap install --devmode FILENAME.snap
+
+snap list
 ```
 
-3. Invoke **echo** function from the ROS snap.
+![Snap List](assets/snap-list.png)
+
+
+3. Invoke **launch** function from the ROS snap.
 ```
-hello-world.echo
+hello-world.launch
 ```
 
 ![Test Deployment](assets/test-deployment.png)
