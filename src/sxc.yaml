@@ -86,9 +86,6 @@ Resources:
           lxd init --auto
           snap install snapcraft --classic
 
-          mkdir -p /tmp/robomaker_snap
-          cd /tmp/robomaker_snap
-
           echo '- Retrieving source code from S3'
           aws s3 cp s3://${UniqueName}/src src/ --recursive
           aws s3 cp s3://${UniqueName}/snap snap/ --recursive
