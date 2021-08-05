@@ -48,26 +48,12 @@ Resources:
       Roles:
         - !Ref SxCAccessRole
 
-
-  SSHSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Enable SSH access via port 22
-      SecurityGroupIngress:
-      - CidrIp: 0.0.0.0/0
-        FromPort: 22
-        IpProtocol: tcp
-        ToPort: 22
-
   SxCInstance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref BuildType
-      KeyName: !Ref UniqueName
-      ImageId: !Ref BuildImage #ami-087fa126bfdebc5c3 Ubuntu18.04 arm64
+      ImageId: !Ref BuildImage
       IamInstanceProfile: !Ref SxCInstanceProfile
-      SecurityGroups:
-        - !Ref SSHSecurityGroup
       Tags:
         - Key: Name
           Value: !Ref UniqueName
@@ -85,6 +71,9 @@ Resources:
           snap install lxd
           lxd init --auto
           snap install snapcraft --classic
+
+          mkdir -p /tmp/robomaker_snap
+          cd /tmp/robomaker_snap
 
           echo '- Retrieving source code from S3'
           aws s3 cp s3://${UniqueName}/src src/ --recursive

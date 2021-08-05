@@ -19,11 +19,9 @@
 
 set -Eeuf -o pipefail
 
-base_name='snap-xcompile'
-cfn_template="$(dirname $0)/sxc.yaml"
-
-# Starting year for Ubuntu versions to list
-START_YEAR=16
+BASE_NAME='snap-xcompile'
+CFN_PATH="$(dirname $0)/sxc.yaml"
+IMG_OWNER_ID=099720109477 # Canonical's publisher ID
 
 LTS_YEARS=(16 18 20)
 ARCHITECTURES=("x86_64" "arm64")
@@ -54,8 +52,6 @@ function cleanup {
 	rm -f $log_file
 	aws s3 rb s3://$name --force &> /dev/null
 	echo -e "\t- Deleted S3 bucket"
-	aws ec2 delete-key-pair --key-name $name &> /dev/null
-	echo -e "\t- Deleted EC2 keypair"
 	aws cloudformation delete-stack --stack-name $name &> /dev/null
 	echo -e '\t- Deleted Snap xCompile resources'
 }
@@ -84,7 +80,7 @@ function get_status {
 # Fetch the latest AMI for the given release and architecture
 function get_ami {
 	ami=$(aws ec2 describe-images \
-    --owners 099720109477 \
+    --owners $IMG_OWNER_ID \
     --filters "Name=name,Values=ubuntu/images/hvm-ssd/ubuntu*$1*" \
     					"Name=state,Values=available" \
     					"Name=architecture,Values=$2" \
@@ -226,7 +222,7 @@ done
 # Create s3 bucket
 # Create unique id for AWS resources
 uuid=$(uuidgen | awk -F- '{print tolower($1)}')
-name="$base_name-$uuid"
+name="$BASE_NAME-$uuid"
 echo "- Creating S3 bucket"
 aws s3 mb s3://$name
 
@@ -236,17 +232,11 @@ echo "- Uploading source code to bucket"
 aws s3 cp "$source/" s3://$name/ --recursive
 
 
-# Create EC2 keypair
-echo "- Creating keypair for EC2 access"
-aws ec2 create-key-pair --key-name $name &> /dev/null
-
-
-
 # Initiate cfn stack
 echo "- Setting up Snap xCompile resources"
 stack_arn=$(aws cloudformation create-stack \
 	--stack-name $name \
-	--template-body file://$(pwd)/$cfn_template \
+	--template-body file://$(pwd)/$CFN_PATH \
 	--parameters ParameterKey=UniqueName,ParameterValue=$name \
 							 ParameterKey=BuildType,ParameterValue=${TYPES[$type_chosen]} \
 							 ParameterKey=BuildImage,ParameterValue=${ami_ids[$ami_chosen]} \
