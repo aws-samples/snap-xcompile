@@ -51,7 +51,6 @@ function cleanup {
 	echo "- Cleaning up resources"
 	rm -f $log_file
 	aws s3 rb s3://$name --force &> /dev/null
-	echo -e "\t- Deleted S3 bucket"
 	aws cloudformation delete-stack --stack-name $name &> /dev/null
 	echo -e '\t- Deleted Snap xCompile resources'
 }
