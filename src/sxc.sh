@@ -228,7 +228,8 @@ aws s3 mb s3://$name
 
 # Upload code files to bucket
 echo "- Uploading source code to bucket"
-aws s3 cp "$source/" s3://$name/ --recursive
+count=$(aws s3 cp $source s3://$name/ --recursive | wc -l)
+echo -e "\t- ${count} assets processed"
 
 
 # Initiate cfn stack
